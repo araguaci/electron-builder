@@ -1,11 +1,13 @@
 Developer API only. See [Configuration](../configuration/configuration.md) for user documentation.
-  
+
 <!-- do not edit. start of generated block -->
 <h1 id="modules">Modules</h1>
 <dl>
 <dt><a href="#module_electron-builder">electron-builder</a></dt>
 <dd></dd>
 <dt><a href="#module_app-builder-lib">app-builder-lib</a></dt>
+<dd></dd>
+<dt><a href="#module_dmg-builder">dmg-builder</a></dt>
 <dd></dd>
 <dt><a href="#module_electron-publish">electron-publish</a></dt>
 <dd></dd>
@@ -20,6 +22,7 @@ Developer API only. See [Configuration](../configuration/configuration.md) for u
 <li><a href="#Arch"><code>.Arch</code></a> : <code>enum</code></li>
 <li><a href="#module_electron-builder.build"><code>.build(rawOptions)</code></a> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></li>
 <li><a href="#module_electron-builder.createTargets"><code>.createTargets(platforms, type, arch)</code></a> ⇒ <code>Map&lt;Platform | Map&lt;<a href="#Arch">Arch</a> | Array&lt;String&gt;&gt;&gt;</code></li>
+<li><a href="#module_electron-builder.publish"><code>.publish(args)</code></a> ⇒ <code>Promise&lt; | Array&gt;</code></li>
 </ul>
 </li>
 </ul>
@@ -76,6 +79,23 @@ Developer API only. See [Configuration](../configuration/configuration.md) for u
 </tr>
 </tbody>
 </table>
+<p><a name="module_electron-builder.publish"></a></p>
+<h2 id="electron-builder.publish(args)-%E2%87%92-promise%3C-%7C-array%3E"><code>electron-builder.publish(args)</code> ⇒ <code>Promise&lt; | Array&gt;</code></h2>
+<p><strong>Kind</strong>: method of <a href="#module_electron-builder"><code>electron-builder</code></a><br/></p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>args</td>
+<td><code>Object&lt;String, any&gt;</code></td>
+</tr>
+</tbody>
+</table>
 <p><a name="module_app-builder-lib"></a></p>
 <h1 id="app-builder-lib">app-builder-lib</h1>
 <ul>
@@ -98,6 +118,8 @@ Developer API only. See [Configuration](../configuration/configuration.md) for u
 <li><a href="#module_app-builder-lib.Framework+prepareApplicationStageDirectory"><code>.prepareApplicationStageDirectory(options)</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
 </ul>
 </li>
+<li><a href="#PlugDescriptor"><code>.PlugDescriptor</code></a></li>
+<li><a href="#SlotDescriptor"><code>.SlotDescriptor</code></a></li>
 <li><a href="#SourceRepositoryInfo"><code>.SourceRepositoryInfo</code></a></li>
 <li><a href="#AppInfo">.AppInfo</a>
 <ul>
@@ -105,13 +127,57 @@ Developer API only. See [Configuration](../configuration/configuration.md) for u
 <li><a href="#module_app-builder-lib.AppInfo+getVersionInWeirdWindowsForm"><code>.getVersionInWeirdWindowsForm(isSetBuildNumber)</code></a> ⇒ <code>String</code></li>
 </ul>
 </li>
+<li><a href="#LinuxPackager">.LinuxPackager</a> ⇐ <code><a href="#PlatformPackager">PlatformPackager</a></code>
+<ul>
+<li><a href="#module_app-builder-lib.LinuxPackager+createTargets"><code>.createTargets(targets, mapper)</code></a></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+artifactPatternConfig"><code>.artifactPatternConfig(targetSpecificOptions, defaultPattern)</code></a> ⇒ <code>module:app-builder-lib/out/platformPackager.__object</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+computeSafeArtifactName"><code>.computeSafeArtifactName(suggestedName, ext, arch, skipDefaultArch, defaultArch, safePattern)</code></a> ⇒ <code>null</code> | <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getDefaultFrameworkIcon"><code>.getDefaultFrameworkIcon()</code></a> ⇒ <code>null</code> | <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+dispatchArtifactCreated"><code>.dispatchArtifactCreated(file, target, arch, safeArtifactName)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getElectronDestinationDir"><code>.getElectronDestinationDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getElectronSrcDir"><code>.getElectronSrcDir(dist)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandArtifactBeautyNamePattern"><code>.expandArtifactBeautyNamePattern(targetSpecificOptions, ext, arch)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandArtifactNamePattern"><code>.expandArtifactNamePattern(targetSpecificOptions, ext, arch, defaultPattern, skipDefaultArch, defaultArch)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandMacro"><code>.expandMacro(pattern, arch, extra, isProductNameSanitized)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+generateName2"><code>.generateName2(ext, classifier, deployment)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getIconPath"><code>.getIconPath()</code></a> ⇒ <code>Promise&lt; | String&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getMacOsResourcesDir"><code>.getMacOsResourcesDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+pack"><code>.pack(outDir, arch, targets, taskManager)</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+resolveIcon"><code>.resolveIcon(sources, fallbackSources, outputFormat)</code></a> ⇒ <code>Promise&lt;Array&lt;module:app-builder-lib/out/platformPackager.IconInfo&gt;&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getResource"><code>.getResource(custom, names)</code></a> ⇒ <code>Promise&lt; | String&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getResourcesDir"><code>.getResourcesDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getTempFile"><code>.getTempFile(suffix)</code></a> ⇒ <code>Promise&lt;String&gt;</code></li>
+</ul>
+</li>
+<li><a href="#MacPackager">.MacPackager</a> ⇐ <code><a href="#PlatformPackager">PlatformPackager</a></code>
+<ul>
+<li><a href="#module_app-builder-lib.MacPackager+applyCommonInfo"><code>.applyCommonInfo(appPlist, contentsPath)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
+<li><a href="#module_app-builder-lib.MacPackager+createTargets"><code>.createTargets(targets, mapper)</code></a></li>
+<li><a href="#module_app-builder-lib.MacPackager+getElectronDestinationDir"><code>.getElectronDestinationDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.MacPackager+getElectronSrcDir"><code>.getElectronSrcDir(dist)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.MacPackager+getIconPath"><code>.getIconPath()</code></a> ⇒ <code>Promise&lt; | String&gt;</code></li>
+<li><a href="#module_app-builder-lib.MacPackager+pack"><code>.pack(outDir, arch, targets, taskManager)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+artifactPatternConfig"><code>.artifactPatternConfig(targetSpecificOptions, defaultPattern)</code></a> ⇒ <code>module:app-builder-lib/out/platformPackager.__object</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+computeSafeArtifactName"><code>.computeSafeArtifactName(suggestedName, ext, arch, skipDefaultArch, defaultArch, safePattern)</code></a> ⇒ <code>null</code> | <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getDefaultFrameworkIcon"><code>.getDefaultFrameworkIcon()</code></a> ⇒ <code>null</code> | <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+dispatchArtifactCreated"><code>.dispatchArtifactCreated(file, target, arch, safeArtifactName)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandArtifactBeautyNamePattern"><code>.expandArtifactBeautyNamePattern(targetSpecificOptions, ext, arch)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandArtifactNamePattern"><code>.expandArtifactNamePattern(targetSpecificOptions, ext, arch, defaultPattern, skipDefaultArch, defaultArch)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandMacro"><code>.expandMacro(pattern, arch, extra, isProductNameSanitized)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+generateName2"><code>.generateName2(ext, classifier, deployment)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getMacOsResourcesDir"><code>.getMacOsResourcesDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+resolveIcon"><code>.resolveIcon(sources, fallbackSources, outputFormat)</code></a> ⇒ <code>Promise&lt;Array&lt;module:app-builder-lib/out/platformPackager.IconInfo&gt;&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getResource"><code>.getResource(custom, names)</code></a> ⇒ <code>Promise&lt; | String&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getResourcesDir"><code>.getResourcesDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getTempFile"><code>.getTempFile(suffix)</code></a> ⇒ <code>Promise&lt;String&gt;</code></li>
+</ul>
+</li>
 <li><a href="#Packager">.Packager</a>
 <ul>
-<li><a href="#module_app-builder-lib.Packager+_build"><code>._build(configuration, metadata, devMetadata, repositoryInfo)</code></a> ⇒ <code>Promise&lt;<a href="#BuildResult">BuildResult</a>&gt;</code></li>
 <li><a href="#module_app-builder-lib.Packager+addAfterPackHandler"><code>.addAfterPackHandler(handler)</code></a></li>
 <li><a href="#module_app-builder-lib.Packager+afterPack"><code>.afterPack(context)</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
 <li><a href="#module_app-builder-lib.Packager+artifactCreated"><code>.artifactCreated(handler)</code></a> ⇒ <code><a href="#Packager">Packager</a></code></li>
-<li><a href="#module_app-builder-lib.Packager+build"><code>.build()</code></a> ⇒ <code>Promise&lt;<a href="#BuildResult">BuildResult</a>&gt;</code></li>
+<li><a href="#module_app-builder-lib.Packager+build"><code>.build(repositoryInfo)</code></a> ⇒ <code>Promise&lt;<a href="#BuildResult">BuildResult</a>&gt;</code></li>
 <li><a href="#module_app-builder-lib.Packager+callAppxManifestCreated"><code>.callAppxManifestCreated(path)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
 <li><a href="#module_app-builder-lib.Packager+callArtifactBuildCompleted"><code>.callArtifactBuildCompleted(event)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
 <li><a href="#module_app-builder-lib.Packager+callArtifactBuildStarted"><code>.callArtifactBuildStarted(event, logFields)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
@@ -119,7 +185,8 @@ Developer API only. See [Configuration](../configuration/configuration.md) for u
 <li><a href="#module_app-builder-lib.Packager+dispatchArtifactCreated"><code>.dispatchArtifactCreated(event)</code></a></li>
 <li><a href="#module_app-builder-lib.Packager+disposeOnBuildFinish"><code>.disposeOnBuildFinish(disposer)</code></a></li>
 <li><a href="#module_app-builder-lib.Packager+installAppDependencies"><code>.installAppDependencies(platform, arch)</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
-<li><a href="#module_app-builder-lib.Packager+getNodeDependencyInfo"><code>.getNodeDependencyInfo(platform)</code></a> ⇒ <code>Lazy&lt;Array&lt;module:app-builder-lib/out/util/packageDependencies.NodeModuleDirInfo&gt;&gt;</code></li>
+<li><a href="#module_app-builder-lib.Packager+getNodeDependencyInfo"><code>.getNodeDependencyInfo(platform)</code></a> ⇒ <code>Lazy&lt;Array&lt;module:app-builder-lib/out/util/packageDependencies.NodeModuleDirInfo | module:app-builder-lib/out/util/packageDependencies.NodeModuleInfo&gt;&gt;</code></li>
+<li><a href="#module_app-builder-lib.Packager+validateConfig"><code>.validateConfig()</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
 </ul>
 </li>
 <li><a href="#Platform">.Platform</a>
@@ -157,12 +224,37 @@ Developer API only. See [Configuration](../configuration/configuration.md) for u
 <li><a href="#module_app-builder-lib.PublishManager+awaitTasks"><code>.awaitTasks()</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
 <li><a href="#module_app-builder-lib.PublishManager+cancelTasks"><code>.cancelTasks()</code></a></li>
 <li><a href="#module_app-builder-lib.PublishManager+getGlobalPublishConfigurations"><code>.getGlobalPublishConfigurations()</code></a> ⇒ <code>Promise&lt; | Array&gt;</code></li>
+<li><a href="#module_app-builder-lib.PublishManager+scheduleUpload"><code>.scheduleUpload(publishConfig, event, appInfo)</code></a></li>
 </ul>
 </li>
 <li><a href="#Target">.Target</a>
 <ul>
 <li><a href="#module_app-builder-lib.Target+build"><code>.build(appOutDir, arch)</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
 <li><a href="#module_app-builder-lib.Target+finishBuild"><code>.finishBuild()</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
+</ul>
+</li>
+<li><a href="#WinPackager">.WinPackager</a> ⇐ <code><a href="#PlatformPackager">PlatformPackager</a></code>
+<ul>
+<li><a href="#module_app-builder-lib.WinPackager+createTargets"><code>.createTargets(targets, mapper)</code></a></li>
+<li><a href="#module_app-builder-lib.WinPackager+getIconPath"><code>.getIconPath()</code></a> ⇒ <code>Promise&lt; | String&gt;</code></li>
+<li><a href="#module_app-builder-lib.WinPackager+sign"><code>.sign(file, logMessagePrefix)</code></a> ⇒ <code>Promise&lt;Boolean&gt;</code></li>
+<li><a href="#module_app-builder-lib.WinPackager+signAndEditResources"><code>.signAndEditResources(file, arch, outDir, internalName, requestedExecutionLevel)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+artifactPatternConfig"><code>.artifactPatternConfig(targetSpecificOptions, defaultPattern)</code></a> ⇒ <code>module:app-builder-lib/out/platformPackager.__object</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+computeSafeArtifactName"><code>.computeSafeArtifactName(suggestedName, ext, arch, skipDefaultArch, defaultArch, safePattern)</code></a> ⇒ <code>null</code> | <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getDefaultFrameworkIcon"><code>.getDefaultFrameworkIcon()</code></a> ⇒ <code>null</code> | <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+dispatchArtifactCreated"><code>.dispatchArtifactCreated(file, target, arch, safeArtifactName)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getElectronDestinationDir"><code>.getElectronDestinationDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getElectronSrcDir"><code>.getElectronSrcDir(dist)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandArtifactBeautyNamePattern"><code>.expandArtifactBeautyNamePattern(targetSpecificOptions, ext, arch)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandArtifactNamePattern"><code>.expandArtifactNamePattern(targetSpecificOptions, ext, arch, defaultPattern, skipDefaultArch, defaultArch)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandMacro"><code>.expandMacro(pattern, arch, extra, isProductNameSanitized)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+generateName2"><code>.generateName2(ext, classifier, deployment)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getMacOsResourcesDir"><code>.getMacOsResourcesDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+pack"><code>.pack(outDir, arch, targets, taskManager)</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+resolveIcon"><code>.resolveIcon(sources, fallbackSources, outputFormat)</code></a> ⇒ <code>Promise&lt;Array&lt;module:app-builder-lib/out/platformPackager.IconInfo&gt;&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getResource"><code>.getResource(custom, names)</code></a> ⇒ <code>Promise&lt; | String&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getResourcesDir"><code>.getResourcesDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getTempFile"><code>.getTempFile(suffix)</code></a> ⇒ <code>Promise&lt;String&gt;</code></li>
 </ul>
 </li>
 <li><a href="#module_app-builder-lib.build"><code>.build(options, packager)</code></a> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></li>
@@ -355,7 +447,13 @@ Developer API only. See [Configuration](../configuration/configuration.md) for u
 </tr>
 </tbody>
 </table>
-<p><a name="SourceRepositoryInfo"></a></p>
+<p><a name="PlugDescriptor"></a></p>
+<h2 id="plugdescriptor"><code>PlugDescriptor</code></h2>
+<p><strong>Kind</strong>: interface of <a href="#module_app-builder-lib"><code>app-builder-lib</code></a><br/>
+<a name="SlotDescriptor"></a></p>
+<h2 id="slotdescriptor"><code>SlotDescriptor</code></h2>
+<p><strong>Kind</strong>: interface of <a href="#module_app-builder-lib"><code>app-builder-lib</code></a><br/>
+<a name="SourceRepositoryInfo"></a></p>
 <h2 id="sourcerepositoryinfo"><code>SourceRepositoryInfo</code></h2>
 <p><strong>Kind</strong>: interface of <a href="#module_app-builder-lib"><code>app-builder-lib</code></a><br/>
 <strong>Properties</strong></p>
@@ -372,6 +470,7 @@ Developer API only. See [Configuration](../configuration/configuration.md) for u
 <ul>
 <li><code id="AppInfo-description">description</code> = <code>smarten(this.info.metadata.description || &quot;&quot;)</code> String</li>
 <li><code id="AppInfo-version">version</code> String</li>
+<li><code id="AppInfo-type">type</code> String | undefined</li>
 <li><code id="AppInfo-shortVersion">shortVersion</code> String | undefined</li>
 <li><code id="AppInfo-shortVersionWindows">shortVersionWindows</code> String | undefined</li>
 <li><code id="AppInfo-buildNumber">buildNumber</code> String | undefined</li>
@@ -414,6 +513,887 @@ Developer API only. See [Configuration](../configuration/configuration.md) for u
 </tr>
 </tbody>
 </table>
+<p><a name="LinuxPackager"></a></p>
+<h2 id="linuxpackager-%E2%87%90-platformpackager">LinuxPackager ⇐ <code><a href="#PlatformPackager">PlatformPackager</a></code></h2>
+<p><strong>Kind</strong>: class of <a href="#module_app-builder-lib"><code>app-builder-lib</code></a><br/>
+<strong>Extends</strong>: <code><a href="#PlatformPackager">PlatformPackager</a></code><br>
+<strong>Properties</strong></p>
+<ul>
+<li><code id="LinuxPackager-executableName">executableName</code> String</li>
+<li><strong><code id="LinuxPackager-defaultTarget">defaultTarget</code></strong> Array&lt;String&gt;</li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul>
+<li><a href="#LinuxPackager">.LinuxPackager</a> ⇐ <code><a href="#PlatformPackager">PlatformPackager</a></code>
+<ul>
+<li><a href="#module_app-builder-lib.LinuxPackager+createTargets"><code>.createTargets(targets, mapper)</code></a></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+artifactPatternConfig"><code>.artifactPatternConfig(targetSpecificOptions, defaultPattern)</code></a> ⇒ <code>module:app-builder-lib/out/platformPackager.__object</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+computeSafeArtifactName"><code>.computeSafeArtifactName(suggestedName, ext, arch, skipDefaultArch, defaultArch, safePattern)</code></a> ⇒ <code>null</code> | <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getDefaultFrameworkIcon"><code>.getDefaultFrameworkIcon()</code></a> ⇒ <code>null</code> | <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+dispatchArtifactCreated"><code>.dispatchArtifactCreated(file, target, arch, safeArtifactName)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getElectronDestinationDir"><code>.getElectronDestinationDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getElectronSrcDir"><code>.getElectronSrcDir(dist)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandArtifactBeautyNamePattern"><code>.expandArtifactBeautyNamePattern(targetSpecificOptions, ext, arch)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandArtifactNamePattern"><code>.expandArtifactNamePattern(targetSpecificOptions, ext, arch, defaultPattern, skipDefaultArch, defaultArch)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandMacro"><code>.expandMacro(pattern, arch, extra, isProductNameSanitized)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+generateName2"><code>.generateName2(ext, classifier, deployment)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getIconPath"><code>.getIconPath()</code></a> ⇒ <code>Promise&lt; | String&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getMacOsResourcesDir"><code>.getMacOsResourcesDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+pack"><code>.pack(outDir, arch, targets, taskManager)</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+resolveIcon"><code>.resolveIcon(sources, fallbackSources, outputFormat)</code></a> ⇒ <code>Promise&lt;Array&lt;module:app-builder-lib/out/platformPackager.IconInfo&gt;&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getResource"><code>.getResource(custom, names)</code></a> ⇒ <code>Promise&lt; | String&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getResourcesDir"><code>.getResourcesDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getTempFile"><code>.getTempFile(suffix)</code></a> ⇒ <code>Promise&lt;String&gt;</code></li>
+</ul>
+</li>
+</ul>
+<p><a name="module_app-builder-lib.LinuxPackager+createTargets"></a></p>
+<h3 id="linuxpackager.createtargets(targets%2C-mapper)"><code>linuxPackager.createTargets(targets, mapper)</code></h3>
+<p><strong>Overrides</strong>: <a href="#module_app-builder-lib.PlatformPackager+createTargets"><code>createTargets</code></a></p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>targets</td>
+<td><code>Array&lt;String&gt;</code></td>
+</tr>
+<tr>
+<td>mapper</td>
+<td><code>callback</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+artifactPatternConfig"></a></p>
+<h3 id="linuxpackager.artifactpatternconfig(targetspecificoptions%2C-defaultpattern)-%E2%87%92-module%3Aapp-builder-lib%2Fout%2Fplatformpackager.__object"><code>linuxPackager.artifactPatternConfig(targetSpecificOptions, defaultPattern)</code> ⇒ <code>module:app-builder-lib/out/platformPackager.__object</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>targetSpecificOptions</td>
+<td><code><a href="#TargetSpecificOptions">TargetSpecificOptions</a></code> | <code>“undefined”</code> | <code>undefined</code></td>
+</tr>
+<tr>
+<td>defaultPattern</td>
+<td><code>String</code> | <code>undefined</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+computeSafeArtifactName"></a></p>
+<h3 id="linuxpackager.computesafeartifactname(suggestedname%2C-ext%2C-arch%2C-skipdefaultarch%2C-defaultarch%2C-safepattern)-%E2%87%92-null-%7C-string"><code>linuxPackager.computeSafeArtifactName(suggestedName, ext, arch, skipDefaultArch, defaultArch, safePattern)</code> ⇒ <code>null</code> | <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>suggestedName</td>
+<td><code>String</code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>ext</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>skipDefaultArch</td>
+<td></td>
+</tr>
+<tr>
+<td>defaultArch</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>safePattern</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getDefaultFrameworkIcon"></a></p>
+<h3 id="linuxpackager.getdefaultframeworkicon()-%E2%87%92-null-%7C-string"><code>linuxPackager.getDefaultFrameworkIcon()</code> ⇒ <code>null</code> | <code>String</code></h3>
+<p><a name="module_app-builder-lib.PlatformPackager+dispatchArtifactCreated"></a></p>
+<h3 id="linuxpackager.dispatchartifactcreated(file%2C-target%2C-arch%2C-safeartifactname)-%E2%87%92-promise%3Cvoid%3E"><code>linuxPackager.dispatchArtifactCreated(file, target, arch, safeArtifactName)</code> ⇒ <code>Promise&lt;void&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>target</td>
+<td><code><a href="#Target">Target</a></code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>safeArtifactName</td>
+<td><code>String</code> | <code>“undefined”</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getElectronDestinationDir"></a></p>
+<h3 id="linuxpackager.getelectrondestinationdir(appoutdir)-%E2%87%92-string"><code>linuxPackager.getElectronDestinationDir(appOutDir)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>appOutDir</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getElectronSrcDir"></a></p>
+<h3 id="linuxpackager.getelectronsrcdir(dist)-%E2%87%92-string"><code>linuxPackager.getElectronSrcDir(dist)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dist</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+expandArtifactBeautyNamePattern"></a></p>
+<h3 id="linuxpackager.expandartifactbeautynamepattern(targetspecificoptions%2C-ext%2C-arch)-%E2%87%92-string"><code>linuxPackager.expandArtifactBeautyNamePattern(targetSpecificOptions, ext, arch)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>targetSpecificOptions</td>
+<td><code><a href="#TargetSpecificOptions">TargetSpecificOptions</a></code> | <code>“undefined”</code> | <code>undefined</code></td>
+</tr>
+<tr>
+<td>ext</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code> | <code>“undefined”</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+expandArtifactNamePattern"></a></p>
+<h3 id="linuxpackager.expandartifactnamepattern(targetspecificoptions%2C-ext%2C-arch%2C-defaultpattern%2C-skipdefaultarch%2C-defaultarch)-%E2%87%92-string"><code>linuxPackager.expandArtifactNamePattern(targetSpecificOptions, ext, arch, defaultPattern, skipDefaultArch, defaultArch)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>targetSpecificOptions</td>
+<td><code><a href="#TargetSpecificOptions">TargetSpecificOptions</a></code> | <code>“undefined”</code> | <code>undefined</code></td>
+</tr>
+<tr>
+<td>ext</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>defaultPattern</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>skipDefaultArch</td>
+<td></td>
+</tr>
+<tr>
+<td>defaultArch</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+expandMacro"></a></p>
+<h3 id="linuxpackager.expandmacro(pattern%2C-arch%2C-extra%2C-isproductnamesanitized)-%E2%87%92-string"><code>linuxPackager.expandMacro(pattern, arch, extra, isProductNameSanitized)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pattern</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code>String</code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>extra</td>
+<td><code>any</code></td>
+</tr>
+<tr>
+<td>isProductNameSanitized</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+generateName2"></a></p>
+<h3 id="linuxpackager.generatename2(ext%2C-classifier%2C-deployment)-%E2%87%92-string"><code>linuxPackager.generateName2(ext, classifier, deployment)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ext</td>
+<td><code>String</code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>classifier</td>
+<td><code>String</code> | <code>“undefined”</code> | <code>undefined</code></td>
+</tr>
+<tr>
+<td>deployment</td>
+<td><code>Boolean</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getIconPath"></a></p>
+<h3 id="linuxpackager.geticonpath()-%E2%87%92-promise%3C-%7C-string%3E"><code>linuxPackager.getIconPath()</code> ⇒ <code>Promise&lt; | String&gt;</code></h3>
+<p><a name="module_app-builder-lib.PlatformPackager+getMacOsResourcesDir"></a></p>
+<h3 id="linuxpackager.getmacosresourcesdir(appoutdir)-%E2%87%92-string"><code>linuxPackager.getMacOsResourcesDir(appOutDir)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>appOutDir</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+pack"></a></p>
+<h3 id="linuxpackager.pack(outdir%2C-arch%2C-targets%2C-taskmanager)-%E2%87%92-promise%3Cany%3E"><code>linuxPackager.pack(outDir, arch, targets, taskManager)</code> ⇒ <code>Promise&lt;any&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>outDir</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code></td>
+</tr>
+<tr>
+<td>targets</td>
+<td><code>Array&lt;<a href="#Target">Target</a>&gt;</code></td>
+</tr>
+<tr>
+<td>taskManager</td>
+<td><code>AsyncTaskManager</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+resolveIcon"></a></p>
+<h3 id="linuxpackager.resolveicon(sources%2C-fallbacksources%2C-outputformat)-%E2%87%92-promise%3Carray%3Cmodule%3Aapp-builder-lib%2Fout%2Fplatformpackager.iconinfo%3E%3E"><code>linuxPackager.resolveIcon(sources, fallbackSources, outputFormat)</code> ⇒ <code>Promise&lt;Array&lt;module:app-builder-lib/out/platformPackager.IconInfo&gt;&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sources</td>
+<td><code>Array&lt;String&gt;</code></td>
+</tr>
+<tr>
+<td>fallbackSources</td>
+<td><code>Array&lt;String&gt;</code></td>
+</tr>
+<tr>
+<td>outputFormat</td>
+<td><code>“set”</code> | <code>“icns”</code> | <code>“ico”</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getResource"></a></p>
+<h3 id="linuxpackager.getresource(custom%2C-names)-%E2%87%92-promise%3C-%7C-string%3E"><code>linuxPackager.getResource(custom, names)</code> ⇒ <code>Promise&lt; | String&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>custom</td>
+<td><code>String</code> | <code>“undefined”</code> | <code>undefined</code></td>
+</tr>
+<tr>
+<td>names</td>
+<td><code>Array&lt;String&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getResourcesDir"></a></p>
+<h3 id="linuxpackager.getresourcesdir(appoutdir)-%E2%87%92-string"><code>linuxPackager.getResourcesDir(appOutDir)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>appOutDir</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getTempFile"></a></p>
+<h3 id="linuxpackager.gettempfile(suffix)-%E2%87%92-promise%3Cstring%3E"><code>linuxPackager.getTempFile(suffix)</code> ⇒ <code>Promise&lt;String&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>suffix</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="MacPackager"></a></p>
+<h2 id="macpackager-%E2%87%90-platformpackager">MacPackager ⇐ <code><a href="#PlatformPackager">PlatformPackager</a></code></h2>
+<p><strong>Kind</strong>: class of <a href="#module_app-builder-lib"><code>app-builder-lib</code></a><br/>
+<strong>Extends</strong>: <code><a href="#PlatformPackager">PlatformPackager</a></code><br>
+<strong>Properties</strong></p>
+<ul>
+<li>
+<p>**&lt;code id=&quot;MacPackager-[codeSigningInfo=new Lazy<CodeSigningInfo>(() =&gt; {
+const cscLink = this.getCscLink()
+if (cscLink == null || process.platform !== “darwin”) {
+return Promise.resolve({ keychainFile: process.env.CSC_KEYCHAIN || null })
+}</p>
+<p>return createKeychain({
+tmpDir: this.info.tempDirManager,
+cscLink,
+cscKeyPassword: this.getCscPassword(),
+cscILink: chooseNotNull(this.platformSpecificBuildOptions.cscInstallerLink, process.env.CSC_INSTALLER_LINK),
+cscIKeyPassword: chooseNotNull(this.platformSpecificBuildOptions.cscInstallerKeyPassword, process.env.CSC_INSTALLER_KEY_PASSWORD),
+currentDir: this.projectDir,
+}).then(result =&gt; {
+const keychainFile = result.keychainFile
+if (keychainFile != null) {
+this.info.disposeOnBuildFinish(() =&gt; removeKeychain(keychainFile))
+}
+return result
+})
+})]&quot;&gt;[codeSigningInfo=new Lazy<CodeSigningInfo>(() =&gt; {
+const cscLink = this.getCscLink()
+if (cscLink == null || process.platform !== “darwin”) {
+return Promise.resolve({ keychainFile: process.env.CSC_KEYCHAIN || null })
+}</p>
+<p>return createKeychain({
+tmpDir: this.info.tempDirManager,
+cscLink,
+cscKeyPassword: this.getCscPassword(),
+cscILink: chooseNotNull(this.platformSpecificBuildOptions.cscInstallerLink, process.env.CSC_INSTALLER_LINK),
+cscIKeyPassword: chooseNotNull(this.platformSpecificBuildOptions.cscInstallerKeyPassword, process.env.CSC_INSTALLER_KEY_PASSWORD),
+currentDir: this.projectDir,
+}).then(result =&gt; {
+const keychainFile = result.keychainFile
+if (keychainFile != null) {
+this.info.disposeOnBuildFinish(() =&gt; removeKeychain(keychainFile))
+}
+return result
+})
+})]</code>** Lazy&lt;module:app-builder-lib/out/codeSign/macCodeSign.CodeSigningInfo&gt;</p>
+</li>
+<li>
+<p><strong><code id="MacPackager-defaultTarget">defaultTarget</code></strong> Array&lt;String&gt;</p>
+</li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul>
+<li><a href="#MacPackager">.MacPackager</a> ⇐ <code><a href="#PlatformPackager">PlatformPackager</a></code>
+<ul>
+<li><a href="#module_app-builder-lib.MacPackager+applyCommonInfo"><code>.applyCommonInfo(appPlist, contentsPath)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
+<li><a href="#module_app-builder-lib.MacPackager+createTargets"><code>.createTargets(targets, mapper)</code></a></li>
+<li><a href="#module_app-builder-lib.MacPackager+getElectronDestinationDir"><code>.getElectronDestinationDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.MacPackager+getElectronSrcDir"><code>.getElectronSrcDir(dist)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.MacPackager+getIconPath"><code>.getIconPath()</code></a> ⇒ <code>Promise&lt; | String&gt;</code></li>
+<li><a href="#module_app-builder-lib.MacPackager+pack"><code>.pack(outDir, arch, targets, taskManager)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+artifactPatternConfig"><code>.artifactPatternConfig(targetSpecificOptions, defaultPattern)</code></a> ⇒ <code>module:app-builder-lib/out/platformPackager.__object</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+computeSafeArtifactName"><code>.computeSafeArtifactName(suggestedName, ext, arch, skipDefaultArch, defaultArch, safePattern)</code></a> ⇒ <code>null</code> | <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getDefaultFrameworkIcon"><code>.getDefaultFrameworkIcon()</code></a> ⇒ <code>null</code> | <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+dispatchArtifactCreated"><code>.dispatchArtifactCreated(file, target, arch, safeArtifactName)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandArtifactBeautyNamePattern"><code>.expandArtifactBeautyNamePattern(targetSpecificOptions, ext, arch)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandArtifactNamePattern"><code>.expandArtifactNamePattern(targetSpecificOptions, ext, arch, defaultPattern, skipDefaultArch, defaultArch)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandMacro"><code>.expandMacro(pattern, arch, extra, isProductNameSanitized)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+generateName2"><code>.generateName2(ext, classifier, deployment)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getMacOsResourcesDir"><code>.getMacOsResourcesDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+resolveIcon"><code>.resolveIcon(sources, fallbackSources, outputFormat)</code></a> ⇒ <code>Promise&lt;Array&lt;module:app-builder-lib/out/platformPackager.IconInfo&gt;&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getResource"><code>.getResource(custom, names)</code></a> ⇒ <code>Promise&lt; | String&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getResourcesDir"><code>.getResourcesDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getTempFile"><code>.getTempFile(suffix)</code></a> ⇒ <code>Promise&lt;String&gt;</code></li>
+</ul>
+</li>
+</ul>
+<p><a name="module_app-builder-lib.MacPackager+applyCommonInfo"></a></p>
+<h3 id="macpackager.applycommoninfo(appplist%2C-contentspath)-%E2%87%92-promise%3Cvoid%3E"><code>macPackager.applyCommonInfo(appPlist, contentsPath)</code> ⇒ <code>Promise&lt;void&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>appPlist</td>
+<td><code>any</code></td>
+</tr>
+<tr>
+<td>contentsPath</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.MacPackager+createTargets"></a></p>
+<h3 id="macpackager.createtargets(targets%2C-mapper)"><code>macPackager.createTargets(targets, mapper)</code></h3>
+<p><strong>Overrides</strong>: <a href="#module_app-builder-lib.PlatformPackager+createTargets"><code>createTargets</code></a></p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>targets</td>
+<td><code>Array&lt;String&gt;</code></td>
+</tr>
+<tr>
+<td>mapper</td>
+<td><code>callback</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.MacPackager+getElectronDestinationDir"></a></p>
+<h3 id="macpackager.getelectrondestinationdir(appoutdir)-%E2%87%92-string"><code>macPackager.getElectronDestinationDir(appOutDir)</code> ⇒ <code>String</code></h3>
+<p><strong>Overrides</strong>: <a href="#module_app-builder-lib.PlatformPackager+getElectronDestinationDir"><code>getElectronDestinationDir</code></a></p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>appOutDir</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.MacPackager+getElectronSrcDir"></a></p>
+<h3 id="macpackager.getelectronsrcdir(dist)-%E2%87%92-string"><code>macPackager.getElectronSrcDir(dist)</code> ⇒ <code>String</code></h3>
+<p><strong>Overrides</strong>: <a href="#module_app-builder-lib.PlatformPackager+getElectronSrcDir"><code>getElectronSrcDir</code></a></p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dist</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.MacPackager+getIconPath"></a></p>
+<h3 id="macpackager.geticonpath()-%E2%87%92-promise%3C-%7C-string%3E"><code>macPackager.getIconPath()</code> ⇒ <code>Promise&lt; | String&gt;</code></h3>
+<p><strong>Overrides</strong>: <a href="#module_app-builder-lib.PlatformPackager+getIconPath"><code>getIconPath</code></a><br>
+<a name="module_app-builder-lib.MacPackager+pack"></a></p>
+<h3 id="macpackager.pack(outdir%2C-arch%2C-targets%2C-taskmanager)-%E2%87%92-promise%3Cvoid%3E"><code>macPackager.pack(outDir, arch, targets, taskManager)</code> ⇒ <code>Promise&lt;void&gt;</code></h3>
+<p><strong>Overrides</strong>: <a href="#module_app-builder-lib.PlatformPackager+pack"><code>pack</code></a></p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>outDir</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code></td>
+</tr>
+<tr>
+<td>targets</td>
+<td><code>Array&lt;<a href="#Target">Target</a>&gt;</code></td>
+</tr>
+<tr>
+<td>taskManager</td>
+<td><code>AsyncTaskManager</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+artifactPatternConfig"></a></p>
+<h3 id="macpackager.artifactpatternconfig(targetspecificoptions%2C-defaultpattern)-%E2%87%92-module%3Aapp-builder-lib%2Fout%2Fplatformpackager.__object"><code>macPackager.artifactPatternConfig(targetSpecificOptions, defaultPattern)</code> ⇒ <code>module:app-builder-lib/out/platformPackager.__object</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>targetSpecificOptions</td>
+<td><code><a href="#TargetSpecificOptions">TargetSpecificOptions</a></code> | <code>“undefined”</code> | <code>undefined</code></td>
+</tr>
+<tr>
+<td>defaultPattern</td>
+<td><code>String</code> | <code>undefined</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+computeSafeArtifactName"></a></p>
+<h3 id="macpackager.computesafeartifactname(suggestedname%2C-ext%2C-arch%2C-skipdefaultarch%2C-defaultarch%2C-safepattern)-%E2%87%92-null-%7C-string"><code>macPackager.computeSafeArtifactName(suggestedName, ext, arch, skipDefaultArch, defaultArch, safePattern)</code> ⇒ <code>null</code> | <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>suggestedName</td>
+<td><code>String</code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>ext</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>skipDefaultArch</td>
+<td></td>
+</tr>
+<tr>
+<td>defaultArch</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>safePattern</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getDefaultFrameworkIcon"></a></p>
+<h3 id="macpackager.getdefaultframeworkicon()-%E2%87%92-null-%7C-string"><code>macPackager.getDefaultFrameworkIcon()</code> ⇒ <code>null</code> | <code>String</code></h3>
+<p><a name="module_app-builder-lib.PlatformPackager+dispatchArtifactCreated"></a></p>
+<h3 id="macpackager.dispatchartifactcreated(file%2C-target%2C-arch%2C-safeartifactname)-%E2%87%92-promise%3Cvoid%3E"><code>macPackager.dispatchArtifactCreated(file, target, arch, safeArtifactName)</code> ⇒ <code>Promise&lt;void&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>target</td>
+<td><code><a href="#Target">Target</a></code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>safeArtifactName</td>
+<td><code>String</code> | <code>“undefined”</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+expandArtifactBeautyNamePattern"></a></p>
+<h3 id="macpackager.expandartifactbeautynamepattern(targetspecificoptions%2C-ext%2C-arch)-%E2%87%92-string"><code>macPackager.expandArtifactBeautyNamePattern(targetSpecificOptions, ext, arch)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>targetSpecificOptions</td>
+<td><code><a href="#TargetSpecificOptions">TargetSpecificOptions</a></code> | <code>“undefined”</code> | <code>undefined</code></td>
+</tr>
+<tr>
+<td>ext</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code> | <code>“undefined”</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+expandArtifactNamePattern"></a></p>
+<h3 id="macpackager.expandartifactnamepattern(targetspecificoptions%2C-ext%2C-arch%2C-defaultpattern%2C-skipdefaultarch%2C-defaultarch)-%E2%87%92-string"><code>macPackager.expandArtifactNamePattern(targetSpecificOptions, ext, arch, defaultPattern, skipDefaultArch, defaultArch)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>targetSpecificOptions</td>
+<td><code><a href="#TargetSpecificOptions">TargetSpecificOptions</a></code> | <code>“undefined”</code> | <code>undefined</code></td>
+</tr>
+<tr>
+<td>ext</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>defaultPattern</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>skipDefaultArch</td>
+<td></td>
+</tr>
+<tr>
+<td>defaultArch</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+expandMacro"></a></p>
+<h3 id="macpackager.expandmacro(pattern%2C-arch%2C-extra%2C-isproductnamesanitized)-%E2%87%92-string"><code>macPackager.expandMacro(pattern, arch, extra, isProductNameSanitized)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pattern</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code>String</code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>extra</td>
+<td><code>any</code></td>
+</tr>
+<tr>
+<td>isProductNameSanitized</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+generateName2"></a></p>
+<h3 id="macpackager.generatename2(ext%2C-classifier%2C-deployment)-%E2%87%92-string"><code>macPackager.generateName2(ext, classifier, deployment)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ext</td>
+<td><code>String</code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>classifier</td>
+<td><code>String</code> | <code>“undefined”</code> | <code>undefined</code></td>
+</tr>
+<tr>
+<td>deployment</td>
+<td><code>Boolean</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getMacOsResourcesDir"></a></p>
+<h3 id="macpackager.getmacosresourcesdir(appoutdir)-%E2%87%92-string"><code>macPackager.getMacOsResourcesDir(appOutDir)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>appOutDir</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+resolveIcon"></a></p>
+<h3 id="macpackager.resolveicon(sources%2C-fallbacksources%2C-outputformat)-%E2%87%92-promise%3Carray%3Cmodule%3Aapp-builder-lib%2Fout%2Fplatformpackager.iconinfo%3E%3E"><code>macPackager.resolveIcon(sources, fallbackSources, outputFormat)</code> ⇒ <code>Promise&lt;Array&lt;module:app-builder-lib/out/platformPackager.IconInfo&gt;&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sources</td>
+<td><code>Array&lt;String&gt;</code></td>
+</tr>
+<tr>
+<td>fallbackSources</td>
+<td><code>Array&lt;String&gt;</code></td>
+</tr>
+<tr>
+<td>outputFormat</td>
+<td><code>“set”</code> | <code>“icns”</code> | <code>“ico”</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getResource"></a></p>
+<h3 id="macpackager.getresource(custom%2C-names)-%E2%87%92-promise%3C-%7C-string%3E"><code>macPackager.getResource(custom, names)</code> ⇒ <code>Promise&lt; | String&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>custom</td>
+<td><code>String</code> | <code>“undefined”</code> | <code>undefined</code></td>
+</tr>
+<tr>
+<td>names</td>
+<td><code>Array&lt;String&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getResourcesDir"></a></p>
+<h3 id="macpackager.getresourcesdir(appoutdir)-%E2%87%92-string"><code>macPackager.getResourcesDir(appOutDir)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>appOutDir</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getTempFile"></a></p>
+<h3 id="macpackager.gettempfile(suffix)-%E2%87%92-promise%3Cstring%3E"><code>macPackager.getTempFile(suffix)</code> ⇒ <code>Promise&lt;String&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>suffix</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
 <p><a name="Packager"></a></p>
 <h2 id="packager">Packager</h2>
 <p><strong>Kind</strong>: class of <a href="#module_app-builder-lib"><code>app-builder-lib</code></a><br/>
@@ -447,11 +1427,10 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 <ul>
 <li><a href="#Packager">.Packager</a>
 <ul>
-<li><a href="#module_app-builder-lib.Packager+_build"><code>._build(configuration, metadata, devMetadata, repositoryInfo)</code></a> ⇒ <code>Promise&lt;<a href="#BuildResult">BuildResult</a>&gt;</code></li>
 <li><a href="#module_app-builder-lib.Packager+addAfterPackHandler"><code>.addAfterPackHandler(handler)</code></a></li>
 <li><a href="#module_app-builder-lib.Packager+afterPack"><code>.afterPack(context)</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
 <li><a href="#module_app-builder-lib.Packager+artifactCreated"><code>.artifactCreated(handler)</code></a> ⇒ <code><a href="#Packager">Packager</a></code></li>
-<li><a href="#module_app-builder-lib.Packager+build"><code>.build()</code></a> ⇒ <code>Promise&lt;<a href="#BuildResult">BuildResult</a>&gt;</code></li>
+<li><a href="#module_app-builder-lib.Packager+build"><code>.build(repositoryInfo)</code></a> ⇒ <code>Promise&lt;<a href="#BuildResult">BuildResult</a>&gt;</code></li>
 <li><a href="#module_app-builder-lib.Packager+callAppxManifestCreated"><code>.callAppxManifestCreated(path)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
 <li><a href="#module_app-builder-lib.Packager+callArtifactBuildCompleted"><code>.callArtifactBuildCompleted(event)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
 <li><a href="#module_app-builder-lib.Packager+callArtifactBuildStarted"><code>.callArtifactBuildStarted(event, logFields)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
@@ -459,38 +1438,11 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 <li><a href="#module_app-builder-lib.Packager+dispatchArtifactCreated"><code>.dispatchArtifactCreated(event)</code></a></li>
 <li><a href="#module_app-builder-lib.Packager+disposeOnBuildFinish"><code>.disposeOnBuildFinish(disposer)</code></a></li>
 <li><a href="#module_app-builder-lib.Packager+installAppDependencies"><code>.installAppDependencies(platform, arch)</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
-<li><a href="#module_app-builder-lib.Packager+getNodeDependencyInfo"><code>.getNodeDependencyInfo(platform)</code></a> ⇒ <code>Lazy&lt;Array&lt;module:app-builder-lib/out/util/packageDependencies.NodeModuleDirInfo&gt;&gt;</code></li>
+<li><a href="#module_app-builder-lib.Packager+getNodeDependencyInfo"><code>.getNodeDependencyInfo(platform)</code></a> ⇒ <code>Lazy&lt;Array&lt;module:app-builder-lib/out/util/packageDependencies.NodeModuleDirInfo | module:app-builder-lib/out/util/packageDependencies.NodeModuleInfo&gt;&gt;</code></li>
+<li><a href="#module_app-builder-lib.Packager+validateConfig"><code>.validateConfig()</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
 </ul>
 </li>
 </ul>
-<p><a name="module_app-builder-lib.Packager+_build"></a></p>
-<h3 id="packager._build(configuration%2C-metadata%2C-devmetadata%2C-repositoryinfo)-%E2%87%92-promise%3Cbuildresult%3E"><code>packager._build(configuration, metadata, devMetadata, repositoryInfo)</code> ⇒ <code>Promise&lt;<a href="#BuildResult">BuildResult</a>&gt;</code></h3>
-<table>
-<thead>
-<tr>
-<th>Param</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>configuration</td>
-<td><code><a href="#Configuration">Configuration</a></code></td>
-</tr>
-<tr>
-<td>metadata</td>
-<td><code><a href="#Metadata">Metadata</a></code></td>
-</tr>
-<tr>
-<td>devMetadata</td>
-<td><code><a href="#Metadata">Metadata</a></code> | <code>“undefined”</code></td>
-</tr>
-<tr>
-<td>repositoryInfo</td>
-<td><code><a href="#SourceRepositoryInfo">SourceRepositoryInfo</a></code></td>
-</tr>
-</tbody>
-</table>
 <p><a name="module_app-builder-lib.Packager+addAfterPackHandler"></a></p>
 <h3 id="packager.addafterpackhandler(handler)"><code>packager.addAfterPackHandler(handler)</code></h3>
 <table>
@@ -540,7 +1492,21 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 </tbody>
 </table>
 <p><a name="module_app-builder-lib.Packager+build"></a></p>
-<h3 id="packager.build()-%E2%87%92-promise%3Cbuildresult%3E"><code>packager.build()</code> ⇒ <code>Promise&lt;<a href="#BuildResult">BuildResult</a>&gt;</code></h3>
+<h3 id="packager.build(repositoryinfo)-%E2%87%92-promise%3Cbuildresult%3E"><code>packager.build(repositoryInfo)</code> ⇒ <code>Promise&lt;<a href="#BuildResult">BuildResult</a>&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>repositoryInfo</td>
+<td><code><a href="#SourceRepositoryInfo">SourceRepositoryInfo</a></code></td>
+</tr>
+</tbody>
+</table>
 <p><a name="module_app-builder-lib.Packager+callAppxManifestCreated"></a></p>
 <h3 id="packager.callappxmanifestcreated(path)-%E2%87%92-promise%3Cvoid%3E"><code>packager.callAppxManifestCreated(path)</code> ⇒ <code>Promise&lt;void&gt;</code></h3>
 <table>
@@ -663,7 +1629,7 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 </tbody>
 </table>
 <p><a name="module_app-builder-lib.Packager+getNodeDependencyInfo"></a></p>
-<h3 id="packager.getnodedependencyinfo(platform)-%E2%87%92-lazy%3Carray%3Cmodule%3Aapp-builder-lib%2Fout%2Futil%2Fpackagedependencies.nodemoduledirinfo%3E%3E"><code>packager.getNodeDependencyInfo(platform)</code> ⇒ <code>Lazy&lt;Array&lt;module:app-builder-lib/out/util/packageDependencies.NodeModuleDirInfo&gt;&gt;</code></h3>
+<h3 id="packager.getnodedependencyinfo(platform)-%E2%87%92-lazy%3Carray%3Cmodule%3Aapp-builder-lib%2Fout%2Futil%2Fpackagedependencies.nodemoduledirinfo-%7C-module%3Aapp-builder-lib%2Fout%2Futil%2Fpackagedependencies.nodemoduleinfo%3E%3E"><code>packager.getNodeDependencyInfo(platform)</code> ⇒ <code>Lazy&lt;Array&lt;module:app-builder-lib/out/util/packageDependencies.NodeModuleDirInfo | module:app-builder-lib/out/util/packageDependencies.NodeModuleInfo&gt;&gt;</code></h3>
 <table>
 <thead>
 <tr>
@@ -678,6 +1644,8 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 </tr>
 </tbody>
 </table>
+<p><a name="module_app-builder-lib.Packager+validateConfig"></a></p>
+<h3 id="packager.validateconfig()-%E2%87%92-promise%3Cvoid%3E"><code>packager.validateConfig()</code> ⇒ <code>Promise&lt;void&gt;</code></h3>
 <p><a name="Platform"></a></p>
 <h2 id="platform">Platform</h2>
 <p><strong>Kind</strong>: class of <a href="#module_app-builder-lib"><code>app-builder-lib</code></a><br/>
@@ -1097,7 +2065,7 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 </tr>
 <tr>
 <td>outputFormat</td>
-<td><code>“icns”</code> | <code>“ico”</code> | <code>“set”</code></td>
+<td><code>“set”</code> | <code>“icns”</code> | <code>“ico”</code></td>
 </tr>
 </tbody>
 </table>
@@ -1169,6 +2137,7 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 <li><a href="#module_app-builder-lib.PublishManager+awaitTasks"><code>.awaitTasks()</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
 <li><a href="#module_app-builder-lib.PublishManager+cancelTasks"><code>.cancelTasks()</code></a></li>
 <li><a href="#module_app-builder-lib.PublishManager+getGlobalPublishConfigurations"><code>.getGlobalPublishConfigurations()</code></a> ⇒ <code>Promise&lt; | Array&gt;</code></li>
+<li><a href="#module_app-builder-lib.PublishManager+scheduleUpload"><code>.scheduleUpload(publishConfig, event, appInfo)</code></a></li>
 </ul>
 </li>
 </ul>
@@ -1178,6 +2147,30 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 <h3 id="publishmanager.canceltasks()"><code>publishManager.cancelTasks()</code></h3>
 <p><a name="module_app-builder-lib.PublishManager+getGlobalPublishConfigurations"></a></p>
 <h3 id="publishmanager.getglobalpublishconfigurations()-%E2%87%92-promise%3C-%7C-array%3E"><code>publishManager.getGlobalPublishConfigurations()</code> ⇒ <code>Promise&lt; | Array&gt;</code></h3>
+<p><a name="module_app-builder-lib.PublishManager+scheduleUpload"></a></p>
+<h3 id="publishmanager.scheduleupload(publishconfig%2C-event%2C-appinfo)"><code>publishManager.scheduleUpload(publishConfig, event, appInfo)</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>publishConfig</td>
+<td><code><a href="/configuration/publish#publishconfiguration">PublishConfiguration</a></code></td>
+</tr>
+<tr>
+<td>event</td>
+<td><code>module:packages/electron-publish/out/publisher.UploadTask</code></td>
+</tr>
+<tr>
+<td>appInfo</td>
+<td><code><a href="#AppInfo">AppInfo</a></code></td>
+</tr>
+</tbody>
+</table>
 <p><a name="Target"></a></p>
 <h2 id="target">Target</h2>
 <p><strong>Kind</strong>: class of <a href="#module_app-builder-lib"><code>app-builder-lib</code></a><br/>
@@ -1217,6 +2210,624 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 </table>
 <p><a name="module_app-builder-lib.Target+finishBuild"></a></p>
 <h3 id="target.finishbuild()-%E2%87%92-promise%3Cany%3E"><code>target.finishBuild()</code> ⇒ <code>Promise&lt;any&gt;</code></h3>
+<p><a name="WinPackager"></a></p>
+<h2 id="winpackager-%E2%87%90-platformpackager">WinPackager ⇐ <code><a href="#PlatformPackager">PlatformPackager</a></code></h2>
+<p><strong>Kind</strong>: class of <a href="#module_app-builder-lib"><code>app-builder-lib</code></a><br/>
+<strong>Extends</strong>: <code><a href="#PlatformPackager">PlatformPackager</a></code><br>
+<strong>Properties</strong></p>
+<ul>
+<li>
+<p>**&lt;code id=&quot;WinPackager-[cscInfo=new Lazy&lt;FileCodeSigningInfo | CertificateFromStoreInfo | null&gt;(() =&gt; {
+const platformSpecificBuildOptions = this.platformSpecificBuildOptions
+if (platformSpecificBuildOptions.certificateSubjectName != null || platformSpecificBuildOptions.certificateSha1 != null) {
+return this.vm.value
+.then(vm =&gt; getCertificateFromStoreInfo(platformSpecificBuildOptions, vm))
+.catch((e: any) =&gt; {
+// <a href="https://github.com/electron-userland/electron-builder/pull/2397">https://github.com/electron-userland/electron-builder/pull/2397</a>
+if (platformSpecificBuildOptions.sign == null) {
+throw e
+} else {
+log.debug({ error: e }, “getCertificateFromStoreInfo error”)
+return null
+}
+})
+}</p>
+<p>const certificateFile = platformSpecificBuildOptions.certificateFile
+if (certificateFile != null) {
+const certificatePassword = this.getCscPassword()
+return Promise.resolve({
+file: certificateFile,
+password: certificatePassword == null ? null : certificatePassword.trim(),
+})
+}</p>
+<p>const cscLink = this.getCscLink(“WIN_CSC_LINK”)
+if (cscLink == null || cscLink === “”) {
+return Promise.resolve(null)
+}</p>
+<p>return (
+importCertificate(cscLink, this.info.tempDirManager, this.projectDir)
+// before then
+.catch((e: any) =&gt; {
+if (e instanceof InvalidConfigurationError) {
+throw new InvalidConfigurationError(<code>Env WIN_CSC_LINK is not correct, cannot resolve: ${e.message}</code>)
+} else {
+throw e
+}
+})
+.then(path =&gt; {
+return {
+file: path,
+password: this.getCscPassword(),
+}
+})
+)
+})]&quot;&gt;[cscInfo=new Lazy&lt;FileCodeSigningInfo | CertificateFromStoreInfo | null&gt;(() =&gt; {
+const platformSpecificBuildOptions = this.platformSpecificBuildOptions
+if (platformSpecificBuildOptions.certificateSubjectName != null || platformSpecificBuildOptions.certificateSha1 != null) {
+return this.vm.value
+.then(vm =&gt; getCertificateFromStoreInfo(platformSpecificBuildOptions, vm))
+.catch((e: any) =&gt; {
+// <a href="https://github.com/electron-userland/electron-builder/pull/2397">https://github.com/electron-userland/electron-builder/pull/2397</a>
+if (platformSpecificBuildOptions.sign == null) {
+throw e
+} else {
+log.debug({ error: e }, “getCertificateFromStoreInfo error”)
+return null
+}
+})
+}</p>
+<p>const certificateFile = platformSpecificBuildOptions.certificateFile
+if (certificateFile != null) {
+const certificatePassword = this.getCscPassword()
+return Promise.resolve({
+file: certificateFile,
+password: certificatePassword == null ? null : certificatePassword.trim(),
+})
+}</p>
+<p>const cscLink = this.getCscLink(“WIN_CSC_LINK”)
+if (cscLink == null || cscLink === “”) {
+return Promise.resolve(null)
+}</p>
+<p>return (
+importCertificate(cscLink, this.info.tempDirManager, this.projectDir)
+// before then
+.catch((e: any) =&gt; {
+if (e instanceof InvalidConfigurationError) {
+throw new InvalidConfigurationError(<code>Env WIN_CSC_LINK is not correct, cannot resolve: ${e.message}</code>)
+} else {
+throw e
+}
+})
+.then(path =&gt; {
+return {
+file: path,
+password: this.getCscPassword(),
+}
+})
+)
+})]</code>** Lazy&lt; | <a href="#FileCodeSigningInfo">FileCodeSigningInfo</a> | <a href="#CertificateFromStoreInfo">CertificateFromStoreInfo</a>&gt;</p>
+</li>
+<li>
+<p><code id="WinPackager-vm">vm</code> = <code>new Lazy&lt;VmManager&gt;(() =&gt; (process.platform === &quot;win32&quot; ? Promise.resolve(new VmManager()) : getWindowsVm(this.debugLogger)))</code> Lazy&lt;module:app-builder-lib/out/vm/vm.VmManager&gt;</p>
+</li>
+<li>
+<p>**&lt;code id=&quot;WinPackager-[computedPublisherName=new Lazy&lt;Array<string> | null&gt;(async () =&gt; {
+const publisherName = this.platformSpecificBuildOptions.publisherName
+if (publisherName === null) {
+return null
+} else if (publisherName != null) {
+return asArray(publisherName)
+}</p>
+<p>const certInfo = await this.lazyCertInfo.value
+return certInfo == null ? null : [certInfo.commonName]
+})]&quot;&gt;[computedPublisherName=new Lazy&lt;Array<string> | null&gt;(async () =&gt; {
+const publisherName = this.platformSpecificBuildOptions.publisherName
+if (publisherName === null) {
+return null
+} else if (publisherName != null) {
+return asArray(publisherName)
+}</p>
+<p>const certInfo = await this.lazyCertInfo.value
+return certInfo == null ? null : [certInfo.commonName]
+})]</code>** Lazy&lt; | Array&gt;</p>
+</li>
+<li>
+<p>**&lt;code id=&quot;WinPackager-[lazyCertInfo=new Lazy&lt;CertificateInfo | null&gt;(async () =&gt; {
+const cscInfo = await this.cscInfo.value
+if (cscInfo == null) {
+return null
+}</p>
+<p>if (“subject” in cscInfo) {
+const bloodyMicrosoftSubjectDn = cscInfo.subject
+return {
+commonName: parseDn(bloodyMicrosoftSubjectDn).get(“CN”)!,
+bloodyMicrosoftSubjectDn,
+}
+}</p>
+<p>const cscFile = cscInfo.file
+if (cscFile == null) {
+return null
+}
+return await getCertInfo(cscFile, cscInfo.password || “”)
+})]&quot;&gt;[lazyCertInfo=new Lazy&lt;CertificateInfo | null&gt;(async () =&gt; {
+const cscInfo = await this.cscInfo.value
+if (cscInfo == null) {
+return null
+}</p>
+<p>if (“subject” in cscInfo) {
+const bloodyMicrosoftSubjectDn = cscInfo.subject
+return {
+commonName: parseDn(bloodyMicrosoftSubjectDn).get(“CN”)!,
+bloodyMicrosoftSubjectDn,
+}
+}</p>
+<p>const cscFile = cscInfo.file
+if (cscFile == null) {
+return null
+}
+return await getCertInfo(cscFile, cscInfo.password || “”)
+})]</code>** Lazy&lt; | module:app-builder-lib/out/codeSign/windowsCodeSign.CertificateInfo&gt;</p>
+</li>
+<li>
+<p><strong><code id="WinPackager-isForceCodeSigningVerification">isForceCodeSigningVerification</code></strong> Boolean</p>
+</li>
+<li>
+<p><strong><code id="WinPackager-defaultTarget">defaultTarget</code></strong> Array&lt;String&gt;</p>
+</li>
+</ul>
+<p><strong>Methods</strong></p>
+<ul>
+<li><a href="#WinPackager">.WinPackager</a> ⇐ <code><a href="#PlatformPackager">PlatformPackager</a></code>
+<ul>
+<li><a href="#module_app-builder-lib.WinPackager+createTargets"><code>.createTargets(targets, mapper)</code></a></li>
+<li><a href="#module_app-builder-lib.WinPackager+getIconPath"><code>.getIconPath()</code></a> ⇒ <code>Promise&lt; | String&gt;</code></li>
+<li><a href="#module_app-builder-lib.WinPackager+sign"><code>.sign(file, logMessagePrefix)</code></a> ⇒ <code>Promise&lt;Boolean&gt;</code></li>
+<li><a href="#module_app-builder-lib.WinPackager+signAndEditResources"><code>.signAndEditResources(file, arch, outDir, internalName, requestedExecutionLevel)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+artifactPatternConfig"><code>.artifactPatternConfig(targetSpecificOptions, defaultPattern)</code></a> ⇒ <code>module:app-builder-lib/out/platformPackager.__object</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+computeSafeArtifactName"><code>.computeSafeArtifactName(suggestedName, ext, arch, skipDefaultArch, defaultArch, safePattern)</code></a> ⇒ <code>null</code> | <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getDefaultFrameworkIcon"><code>.getDefaultFrameworkIcon()</code></a> ⇒ <code>null</code> | <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+dispatchArtifactCreated"><code>.dispatchArtifactCreated(file, target, arch, safeArtifactName)</code></a> ⇒ <code>Promise&lt;void&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getElectronDestinationDir"><code>.getElectronDestinationDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getElectronSrcDir"><code>.getElectronSrcDir(dist)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandArtifactBeautyNamePattern"><code>.expandArtifactBeautyNamePattern(targetSpecificOptions, ext, arch)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandArtifactNamePattern"><code>.expandArtifactNamePattern(targetSpecificOptions, ext, arch, defaultPattern, skipDefaultArch, defaultArch)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+expandMacro"><code>.expandMacro(pattern, arch, extra, isProductNameSanitized)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+generateName2"><code>.generateName2(ext, classifier, deployment)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getMacOsResourcesDir"><code>.getMacOsResourcesDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+pack"><code>.pack(outDir, arch, targets, taskManager)</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+resolveIcon"><code>.resolveIcon(sources, fallbackSources, outputFormat)</code></a> ⇒ <code>Promise&lt;Array&lt;module:app-builder-lib/out/platformPackager.IconInfo&gt;&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getResource"><code>.getResource(custom, names)</code></a> ⇒ <code>Promise&lt; | String&gt;</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getResourcesDir"><code>.getResourcesDir(appOutDir)</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_app-builder-lib.PlatformPackager+getTempFile"><code>.getTempFile(suffix)</code></a> ⇒ <code>Promise&lt;String&gt;</code></li>
+</ul>
+</li>
+</ul>
+<p><a name="module_app-builder-lib.WinPackager+createTargets"></a></p>
+<h3 id="winpackager.createtargets(targets%2C-mapper)"><code>winPackager.createTargets(targets, mapper)</code></h3>
+<p><strong>Overrides</strong>: <a href="#module_app-builder-lib.PlatformPackager+createTargets"><code>createTargets</code></a></p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>targets</td>
+<td><code>Array&lt;String&gt;</code></td>
+</tr>
+<tr>
+<td>mapper</td>
+<td><code>callback</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.WinPackager+getIconPath"></a></p>
+<h3 id="winpackager.geticonpath()-%E2%87%92-promise%3C-%7C-string%3E"><code>winPackager.getIconPath()</code> ⇒ <code>Promise&lt; | String&gt;</code></h3>
+<p><strong>Overrides</strong>: <a href="#module_app-builder-lib.PlatformPackager+getIconPath"><code>getIconPath</code></a><br>
+<a name="module_app-builder-lib.WinPackager+sign"></a></p>
+<h3 id="winpackager.sign(file%2C-logmessageprefix)-%E2%87%92-promise%3Cboolean%3E"><code>winPackager.sign(file, logMessagePrefix)</code> ⇒ <code>Promise&lt;Boolean&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>logMessagePrefix</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.WinPackager+signAndEditResources"></a></p>
+<h3 id="winpackager.signandeditresources(file%2C-arch%2C-outdir%2C-internalname%2C-requestedexecutionlevel)-%E2%87%92-promise%3Cvoid%3E"><code>winPackager.signAndEditResources(file, arch, outDir, internalName, requestedExecutionLevel)</code> ⇒ <code>Promise&lt;void&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code></td>
+</tr>
+<tr>
+<td>outDir</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>internalName</td>
+<td><code>String</code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>requestedExecutionLevel</td>
+<td><code>“asInvoker”</code> | <code>“highestAvailable”</code> | <code>“requireAdministrator”</code> | <code>“undefined”</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+artifactPatternConfig"></a></p>
+<h3 id="winpackager.artifactpatternconfig(targetspecificoptions%2C-defaultpattern)-%E2%87%92-module%3Aapp-builder-lib%2Fout%2Fplatformpackager.__object"><code>winPackager.artifactPatternConfig(targetSpecificOptions, defaultPattern)</code> ⇒ <code>module:app-builder-lib/out/platformPackager.__object</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>targetSpecificOptions</td>
+<td><code><a href="#TargetSpecificOptions">TargetSpecificOptions</a></code> | <code>“undefined”</code> | <code>undefined</code></td>
+</tr>
+<tr>
+<td>defaultPattern</td>
+<td><code>String</code> | <code>undefined</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+computeSafeArtifactName"></a></p>
+<h3 id="winpackager.computesafeartifactname(suggestedname%2C-ext%2C-arch%2C-skipdefaultarch%2C-defaultarch%2C-safepattern)-%E2%87%92-null-%7C-string"><code>winPackager.computeSafeArtifactName(suggestedName, ext, arch, skipDefaultArch, defaultArch, safePattern)</code> ⇒ <code>null</code> | <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>suggestedName</td>
+<td><code>String</code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>ext</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>skipDefaultArch</td>
+<td></td>
+</tr>
+<tr>
+<td>defaultArch</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>safePattern</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getDefaultFrameworkIcon"></a></p>
+<h3 id="winpackager.getdefaultframeworkicon()-%E2%87%92-null-%7C-string"><code>winPackager.getDefaultFrameworkIcon()</code> ⇒ <code>null</code> | <code>String</code></h3>
+<p><a name="module_app-builder-lib.PlatformPackager+dispatchArtifactCreated"></a></p>
+<h3 id="winpackager.dispatchartifactcreated(file%2C-target%2C-arch%2C-safeartifactname)-%E2%87%92-promise%3Cvoid%3E"><code>winPackager.dispatchArtifactCreated(file, target, arch, safeArtifactName)</code> ⇒ <code>Promise&lt;void&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>file</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>target</td>
+<td><code><a href="#Target">Target</a></code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>safeArtifactName</td>
+<td><code>String</code> | <code>“undefined”</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getElectronDestinationDir"></a></p>
+<h3 id="winpackager.getelectrondestinationdir(appoutdir)-%E2%87%92-string"><code>winPackager.getElectronDestinationDir(appOutDir)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>appOutDir</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getElectronSrcDir"></a></p>
+<h3 id="winpackager.getelectronsrcdir(dist)-%E2%87%92-string"><code>winPackager.getElectronSrcDir(dist)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dist</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+expandArtifactBeautyNamePattern"></a></p>
+<h3 id="winpackager.expandartifactbeautynamepattern(targetspecificoptions%2C-ext%2C-arch)-%E2%87%92-string"><code>winPackager.expandArtifactBeautyNamePattern(targetSpecificOptions, ext, arch)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>targetSpecificOptions</td>
+<td><code><a href="#TargetSpecificOptions">TargetSpecificOptions</a></code> | <code>“undefined”</code> | <code>undefined</code></td>
+</tr>
+<tr>
+<td>ext</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code> | <code>“undefined”</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+expandArtifactNamePattern"></a></p>
+<h3 id="winpackager.expandartifactnamepattern(targetspecificoptions%2C-ext%2C-arch%2C-defaultpattern%2C-skipdefaultarch%2C-defaultarch)-%E2%87%92-string"><code>winPackager.expandArtifactNamePattern(targetSpecificOptions, ext, arch, defaultPattern, skipDefaultArch, defaultArch)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>targetSpecificOptions</td>
+<td><code><a href="#TargetSpecificOptions">TargetSpecificOptions</a></code> | <code>“undefined”</code> | <code>undefined</code></td>
+</tr>
+<tr>
+<td>ext</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>defaultPattern</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>skipDefaultArch</td>
+<td></td>
+</tr>
+<tr>
+<td>defaultArch</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+expandMacro"></a></p>
+<h3 id="winpackager.expandmacro(pattern%2C-arch%2C-extra%2C-isproductnamesanitized)-%E2%87%92-string"><code>winPackager.expandMacro(pattern, arch, extra, isProductNameSanitized)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>pattern</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code>String</code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>extra</td>
+<td><code>any</code></td>
+</tr>
+<tr>
+<td>isProductNameSanitized</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+generateName2"></a></p>
+<h3 id="winpackager.generatename2(ext%2C-classifier%2C-deployment)-%E2%87%92-string"><code>winPackager.generateName2(ext, classifier, deployment)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ext</td>
+<td><code>String</code> | <code>“undefined”</code></td>
+</tr>
+<tr>
+<td>classifier</td>
+<td><code>String</code> | <code>“undefined”</code> | <code>undefined</code></td>
+</tr>
+<tr>
+<td>deployment</td>
+<td><code>Boolean</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getMacOsResourcesDir"></a></p>
+<h3 id="winpackager.getmacosresourcesdir(appoutdir)-%E2%87%92-string"><code>winPackager.getMacOsResourcesDir(appOutDir)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>appOutDir</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+pack"></a></p>
+<h3 id="winpackager.pack(outdir%2C-arch%2C-targets%2C-taskmanager)-%E2%87%92-promise%3Cany%3E"><code>winPackager.pack(outDir, arch, targets, taskManager)</code> ⇒ <code>Promise&lt;any&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>outDir</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>arch</td>
+<td><code><a href="#Arch">Arch</a></code></td>
+</tr>
+<tr>
+<td>targets</td>
+<td><code>Array&lt;<a href="#Target">Target</a>&gt;</code></td>
+</tr>
+<tr>
+<td>taskManager</td>
+<td><code>AsyncTaskManager</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+resolveIcon"></a></p>
+<h3 id="winpackager.resolveicon(sources%2C-fallbacksources%2C-outputformat)-%E2%87%92-promise%3Carray%3Cmodule%3Aapp-builder-lib%2Fout%2Fplatformpackager.iconinfo%3E%3E"><code>winPackager.resolveIcon(sources, fallbackSources, outputFormat)</code> ⇒ <code>Promise&lt;Array&lt;module:app-builder-lib/out/platformPackager.IconInfo&gt;&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sources</td>
+<td><code>Array&lt;String&gt;</code></td>
+</tr>
+<tr>
+<td>fallbackSources</td>
+<td><code>Array&lt;String&gt;</code></td>
+</tr>
+<tr>
+<td>outputFormat</td>
+<td><code>“set”</code> | <code>“icns”</code> | <code>“ico”</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getResource"></a></p>
+<h3 id="winpackager.getresource(custom%2C-names)-%E2%87%92-promise%3C-%7C-string%3E"><code>winPackager.getResource(custom, names)</code> ⇒ <code>Promise&lt; | String&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>custom</td>
+<td><code>String</code> | <code>“undefined”</code> | <code>undefined</code></td>
+</tr>
+<tr>
+<td>names</td>
+<td><code>Array&lt;String&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getResourcesDir"></a></p>
+<h3 id="winpackager.getresourcesdir(appoutdir)-%E2%87%92-string"><code>winPackager.getResourcesDir(appOutDir)</code> ⇒ <code>String</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>appOutDir</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_app-builder-lib.PlatformPackager+getTempFile"></a></p>
+<h3 id="winpackager.gettempfile(suffix)-%E2%87%92-promise%3Cstring%3E"><code>winPackager.getTempFile(suffix)</code> ⇒ <code>Promise&lt;String&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>suffix</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
 <p><a name="module_app-builder-lib.build"></a></p>
 <h2 id="app-builder-lib.build(options%2C-packager)-%E2%87%92-promise%3Carray%3Cstring%3E%3E"><code>app-builder-lib.build(options, packager)</code> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></h2>
 <p><strong>Kind</strong>: method of <a href="#module_app-builder-lib"><code>app-builder-lib</code></a><br/></p>
@@ -1259,7 +2870,85 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 </tr>
 </tbody>
 </table>
-<p><a name="module_electron-publish"></a></p>
+<p><a name="module_dmg-builder"></a></p>
+<h1 id="dmg-builder">dmg-builder</h1>
+<ul>
+<li><a href="#module_dmg-builder">dmg-builder</a>
+<ul>
+<li><a href="#module_dmg-builder.attachAndExecute"><code>.attachAndExecute(dmgPath, readWrite, task)</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
+<li><a href="#module_dmg-builder.computeBackground"><code>.computeBackground(packager)</code></a> ⇒ <code>Promise&lt;String&gt;</code></li>
+<li><a href="#module_dmg-builder.detach"><code>.detach(name)</code></a> ⇒ <code>Promise&lt;String&gt;</code></li>
+<li><a href="#module_dmg-builder.getDmgTemplatePath"><code>.getDmgTemplatePath()</code></a> ⇒ <code>String</code></li>
+<li><a href="#module_dmg-builder.getDmgVendorPath"><code>.getDmgVendorPath()</code></a> ⇒ <code>String</code></li>
+</ul>
+</li>
+</ul>
+<p><a name="module_dmg-builder.attachAndExecute"></a></p>
+<h2 id="dmg-builder.attachandexecute(dmgpath%2C-readwrite%2C-task)-%E2%87%92-promise%3Cany%3E"><code>dmg-builder.attachAndExecute(dmgPath, readWrite, task)</code> ⇒ <code>Promise&lt;any&gt;</code></h2>
+<p><strong>Kind</strong>: method of <a href="#module_dmg-builder"><code>dmg-builder</code></a><br/></p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>dmgPath</td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>readWrite</td>
+<td><code>Boolean</code></td>
+</tr>
+<tr>
+<td>task</td>
+<td><code>callback</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_dmg-builder.computeBackground"></a></p>
+<h2 id="dmg-builder.computebackground(packager)-%E2%87%92-promise%3Cstring%3E"><code>dmg-builder.computeBackground(packager)</code> ⇒ <code>Promise&lt;String&gt;</code></h2>
+<p><strong>Kind</strong>: method of <a href="#module_dmg-builder"><code>dmg-builder</code></a><br/></p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>packager</td>
+<td><code>PlatformPackager&lt;any&gt;</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_dmg-builder.detach"></a></p>
+<h2 id="dmg-builder.detach(name)-%E2%87%92-promise%3Cstring%3E"><code>dmg-builder.detach(name)</code> ⇒ <code>Promise&lt;String&gt;</code></h2>
+<p><strong>Kind</strong>: method of <a href="#module_dmg-builder"><code>dmg-builder</code></a><br/></p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>name</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_dmg-builder.getDmgTemplatePath"></a></p>
+<h2 id="dmg-builder.getdmgtemplatepath()-%E2%87%92-string"><code>dmg-builder.getDmgTemplatePath()</code> ⇒ <code>String</code></h2>
+<p><strong>Kind</strong>: method of <a href="#module_dmg-builder"><code>dmg-builder</code></a><br/>
+<a name="module_dmg-builder.getDmgVendorPath"></a></p>
+<h2 id="dmg-builder.getdmgvendorpath()-%E2%87%92-string"><code>dmg-builder.getDmgVendorPath()</code> ⇒ <code>String</code></h2>
+<p><strong>Kind</strong>: method of <a href="#module_dmg-builder"><code>dmg-builder</code></a><br/>
+<a name="module_electron-publish"></a></p>
 <h1 id="electron-publish">electron-publish</h1>
 <ul>
 <li><a href="#module_electron-publish">electron-publish</a>
@@ -1413,21 +3102,49 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 <li><a href="#ResolvedUpdateFileInfo"><code>.ResolvedUpdateFileInfo</code></a></li>
 <li><a href="#UpdateCheckResult"><code>.UpdateCheckResult</code></a></li>
 <li><a href="#UpdateDownloadedEvent"><code>.UpdateDownloadedEvent</code></a> ⇐ <code>module:builder-util-runtime.UpdateInfo</code></li>
-<li><a href="#AppImageUpdater">.AppImageUpdater</a> ⇐ <code>module:electron-updater/out/BaseUpdater.BaseUpdater</code>
+<li><a href="#AppImageUpdater">.AppImageUpdater</a> ⇐ <code><a href="#BaseUpdater">BaseUpdater</a></code>
 <ul>
 <li><a href="#module_electron-updater.AppImageUpdater+isUpdaterActive"><code>.isUpdaterActive()</code></a> ⇒ <code>Boolean</code></li>
+<li><a href="#module_electron-updater.BaseUpdater+install"><code>.install(isSilent, isForceRunAfter)</code></a> ⇒ <code>Boolean</code></li>
+<li><a href="#module_electron-updater.BaseUpdater+quitAndInstall"><code>.quitAndInstall(isSilent, isForceRunAfter)</code></a></li>
 </ul>
 </li>
-<li><a href="#AppUpdater">.AppUpdater</a> ⇐ <code>module:typed-emitter/index.TypedEventEmitter</code>
+<li><a href="#AppUpdater">.AppUpdater</a> ⇐ <code>module:tiny-typed-emitter/lib/index.TypedEmitter</code>
 <ul>
 <li><a href="#module_electron-updater.AppUpdater+addAuthHeader"><code>.addAuthHeader(token)</code></a></li>
 <li><a href="#module_electron-updater.AppUpdater+checkForUpdates"><code>.checkForUpdates()</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
 <li><a href="#module_electron-updater.AppUpdater+checkForUpdatesAndNotify"><code>.checkForUpdatesAndNotify(downloadNotification)</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
-<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></li>
 <li><a href="#module_electron-updater.AppUpdater+getFeedURL"><code>.getFeedURL()</code></a> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></li>
 <li><a href="#module_electron-updater.AppUpdater+setFeedURL"><code>.setFeedURL(options)</code></a></li>
 <li><a href="#module_electron-updater.AppUpdater+isUpdaterActive"><code>.isUpdaterActive()</code></a> ⇒ <code>Boolean</code></li>
 <li><a href="#module_electron-updater.AppUpdater+quitAndInstall"><code>.quitAndInstall(isSilent, isForceRunAfter)</code></a></li>
+</ul>
+</li>
+<li><a href="#BaseUpdater">.BaseUpdater</a> ⇐ <code><a href="#AppUpdater">AppUpdater</a></code>
+<ul>
+<li><a href="#module_electron-updater.BaseUpdater+install"><code>.install(isSilent, isForceRunAfter)</code></a> ⇒ <code>Boolean</code></li>
+<li><a href="#module_electron-updater.BaseUpdater+quitAndInstall"><code>.quitAndInstall(isSilent, isForceRunAfter)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+addAuthHeader"><code>.addAuthHeader(token)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdates"><code>.checkForUpdates()</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdatesAndNotify"><code>.checkForUpdatesAndNotify(downloadNotification)</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+getFeedURL"><code>.getFeedURL()</code></a> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></li>
+<li><a href="#module_electron-updater.AppUpdater+setFeedURL"><code>.setFeedURL(options)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+isUpdaterActive"><code>.isUpdaterActive()</code></a> ⇒ <code>Boolean</code></li>
+</ul>
+</li>
+<li><a href="#DebUpdater">.DebUpdater</a> ⇐ <code><a href="#BaseUpdater">BaseUpdater</a></code>
+<ul>
+<li><a href="#module_electron-updater.BaseUpdater+install"><code>.install(isSilent, isForceRunAfter)</code></a> ⇒ <code>Boolean</code></li>
+<li><a href="#module_electron-updater.BaseUpdater+quitAndInstall"><code>.quitAndInstall(isSilent, isForceRunAfter)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+addAuthHeader"><code>.addAuthHeader(token)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdates"><code>.checkForUpdates()</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdatesAndNotify"><code>.checkForUpdatesAndNotify(downloadNotification)</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+getFeedURL"><code>.getFeedURL()</code></a> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></li>
+<li><a href="#module_electron-updater.AppUpdater+setFeedURL"><code>.setFeedURL(options)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+isUpdaterActive"><code>.isUpdaterActive()</code></a> ⇒ <code>Boolean</code></li>
 </ul>
 </li>
 <li><a href="#MacUpdater">.MacUpdater</a> ⇐ <code><a href="#AppUpdater">AppUpdater</a></code>
@@ -1436,18 +3153,43 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 <li><a href="#module_electron-updater.AppUpdater+addAuthHeader"><code>.addAuthHeader(token)</code></a></li>
 <li><a href="#module_electron-updater.AppUpdater+checkForUpdates"><code>.checkForUpdates()</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
 <li><a href="#module_electron-updater.AppUpdater+checkForUpdatesAndNotify"><code>.checkForUpdatesAndNotify(downloadNotification)</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
-<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></li>
 <li><a href="#module_electron-updater.AppUpdater+getFeedURL"><code>.getFeedURL()</code></a> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></li>
 <li><a href="#module_electron-updater.AppUpdater+setFeedURL"><code>.setFeedURL(options)</code></a></li>
 <li><a href="#module_electron-updater.AppUpdater+isUpdaterActive"><code>.isUpdaterActive()</code></a> ⇒ <code>Boolean</code></li>
 </ul>
 </li>
-<li><a href="#NsisUpdater">.NsisUpdater</a> ⇐ <code>module:electron-updater/out/BaseUpdater.BaseUpdater</code></li>
+<li><a href="#NsisUpdater">.NsisUpdater</a> ⇐ <code><a href="#BaseUpdater">BaseUpdater</a></code>
+<ul>
+<li><a href="#module_electron-updater.BaseUpdater+install"><code>.install(isSilent, isForceRunAfter)</code></a> ⇒ <code>Boolean</code></li>
+<li><a href="#module_electron-updater.BaseUpdater+quitAndInstall"><code>.quitAndInstall(isSilent, isForceRunAfter)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+addAuthHeader"><code>.addAuthHeader(token)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdates"><code>.checkForUpdates()</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdatesAndNotify"><code>.checkForUpdatesAndNotify(downloadNotification)</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+getFeedURL"><code>.getFeedURL()</code></a> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></li>
+<li><a href="#module_electron-updater.AppUpdater+setFeedURL"><code>.setFeedURL(options)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+isUpdaterActive"><code>.isUpdaterActive()</code></a> ⇒ <code>Boolean</code></li>
+</ul>
+</li>
 <li><a href="#Provider">.Provider</a>
 <ul>
 <li><a href="#module_electron-updater.Provider+getLatestVersion"><code>.getLatestVersion()</code></a> ⇒ <code>Promise&lt;module:electron-updater/out/providers/Provider.T&gt;</code></li>
 <li><a href="#module_electron-updater.Provider+setRequestHeaders"><code>.setRequestHeaders(value)</code></a></li>
 <li><a href="#module_electron-updater.Provider+resolveFiles"><code>.resolveFiles(updateInfo)</code></a> ⇒ <code>Array&lt;<a href="#ResolvedUpdateFileInfo">ResolvedUpdateFileInfo</a>&gt;</code></li>
+</ul>
+</li>
+<li><a href="#RpmUpdater">.RpmUpdater</a> ⇐ <code><a href="#BaseUpdater">BaseUpdater</a></code>
+<ul>
+<li><a href="#module_electron-updater.BaseUpdater+install"><code>.install(isSilent, isForceRunAfter)</code></a> ⇒ <code>Boolean</code></li>
+<li><a href="#module_electron-updater.BaseUpdater+quitAndInstall"><code>.quitAndInstall(isSilent, isForceRunAfter)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+addAuthHeader"><code>.addAuthHeader(token)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdates"><code>.checkForUpdates()</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdatesAndNotify"><code>.checkForUpdatesAndNotify(downloadNotification)</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+getFeedURL"><code>.getFeedURL()</code></a> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></li>
+<li><a href="#module_electron-updater.AppUpdater+setFeedURL"><code>.setFeedURL(options)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+isUpdaterActive"><code>.isUpdaterActive()</code></a> ⇒ <code>Boolean</code></li>
 </ul>
 </li>
 <li><a href="#UpdaterSignal">.UpdaterSignal</a>
@@ -1567,15 +3309,58 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 <li><strong><code id="UpdateDownloadedEvent-downloadedFile">downloadedFile</code></strong> String</li>
 </ul>
 <p><a name="AppImageUpdater"></a></p>
-<h2 id="appimageupdater-%E2%87%90-module%3Aelectron-updater%2Fout%2Fbaseupdater.baseupdater">AppImageUpdater ⇐ <code>module:electron-updater/out/BaseUpdater.BaseUpdater</code></h2>
+<h2 id="appimageupdater-%E2%87%90-baseupdater">AppImageUpdater ⇐ <code><a href="#BaseUpdater">BaseUpdater</a></code></h2>
 <p><strong>Kind</strong>: class of <a href="#module_electron-updater"><code>electron-updater</code></a><br/>
-<strong>Extends</strong>: <code>module:electron-updater/out/BaseUpdater.BaseUpdater</code><br>
-<a name="module_electron-updater.AppImageUpdater+isUpdaterActive"></a></p>
+<strong>Extends</strong>: <code><a href="#BaseUpdater">BaseUpdater</a></code></p>
+<ul>
+<li><a href="#AppImageUpdater">.AppImageUpdater</a> ⇐ <code><a href="#BaseUpdater">BaseUpdater</a></code>
+<ul>
+<li><a href="#module_electron-updater.AppImageUpdater+isUpdaterActive"><code>.isUpdaterActive()</code></a> ⇒ <code>Boolean</code></li>
+<li><a href="#module_electron-updater.BaseUpdater+install"><code>.install(isSilent, isForceRunAfter)</code></a> ⇒ <code>Boolean</code></li>
+<li><a href="#module_electron-updater.BaseUpdater+quitAndInstall"><code>.quitAndInstall(isSilent, isForceRunAfter)</code></a></li>
+</ul>
+</li>
+</ul>
+<p><a name="module_electron-updater.AppImageUpdater+isUpdaterActive"></a></p>
 <h3 id="appimageupdater.isupdateractive()-%E2%87%92-boolean"><code>appImageUpdater.isUpdaterActive()</code> ⇒ <code>Boolean</code></h3>
+<p><a name="module_electron-updater.BaseUpdater+install"></a></p>
+<h3 id="appimageupdater.install(issilent%2C-isforcerunafter)-%E2%87%92-boolean"><code>appImageUpdater.install(isSilent, isForceRunAfter)</code> ⇒ <code>Boolean</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>isSilent</td>
+</tr>
+<tr>
+<td>isForceRunAfter</td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.BaseUpdater+quitAndInstall"></a></p>
+<h3 id="appimageupdater.quitandinstall(issilent%2C-isforcerunafter)"><code>appImageUpdater.quitAndInstall(isSilent, isForceRunAfter)</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>isSilent</td>
+</tr>
+<tr>
+<td>isForceRunAfter</td>
+</tr>
+</tbody>
+</table>
 <p><a name="AppUpdater"></a></p>
-<h2 id="appupdater-%E2%87%90-module%3Atyped-emitter%2Findex.typedeventemitter">AppUpdater ⇐ <code>module:typed-emitter/index.TypedEventEmitter</code></h2>
+<h2 id="appupdater-%E2%87%90-module%3Atiny-typed-emitter%2Flib%2Findex.typedemitter">AppUpdater ⇐ <code>module:tiny-typed-emitter/lib/index.TypedEmitter</code></h2>
 <p><strong>Kind</strong>: class of <a href="#module_electron-updater"><code>electron-updater</code></a><br/>
-<strong>Extends</strong>: <code>module:typed-emitter/index.TypedEventEmitter</code><br>
+<strong>Extends</strong>: <code>module:tiny-typed-emitter/lib/index.TypedEmitter</code><br>
 <strong>Properties</strong></p>
 <ul>
 <li>
@@ -1583,6 +3368,9 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 </li>
 <li>
 <p><code id="AppUpdater-autoInstallOnAppQuit">autoInstallOnAppQuit</code> = <code>true</code> Boolean - Whether to automatically install a downloaded update on app quit (if <code>quitAndInstall</code> was not called before).</p>
+</li>
+<li>
+<p><code id="AppUpdater-autoRunAppAfterInstall">autoRunAppAfterInstall</code> = <code>true</code> Boolean - <em>windows-only</em> Whether to run the app after finish install when run the installer NOT in silent mode.</p>
 </li>
 <li>
 <p><code id="AppUpdater-allowPrerelease">allowPrerelease</code> = <code>false</code> Boolean - <em>GitHub provider only.</em> Whether to allow update to pre-release versions. Defaults to <code>true</code> if application version contains prerelease components (e.g. <code>0.12.1-alpha.1</code>, here <code>alpha</code> is a prerelease component), otherwise <code>false</code>.</p>
@@ -1600,10 +3388,16 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 <p>Currently false to prevent breaking the current API, but it should be changed to default true at some point that breaking changes are allowed.</p>
 </li>
 <li>
+<p><code id="AppUpdater-disableDifferentialDownload">disableDifferentialDownload</code> = <code>false</code> Boolean - <em>NSIS only</em> Disable differential downloads and always perform full download of installer.</p>
+</li>
+<li>
+<p><code id="AppUpdater-forceDevUpdateConfig">forceDevUpdateConfig</code> = <code>false</code> Boolean - Allows developer to force the updater to work in “dev” mode, looking for “dev-app-update.yml” instead of “app-update.yml” Dev: <code>path.join(this.app.getAppPath(), &quot;dev-app-update.yml&quot;)</code> Prod: <code>path.join(process.resourcesPath!, &quot;app-update.yml&quot;)</code></p>
+</li>
+<li>
 <p><code id="AppUpdater-currentVersion">currentVersion</code> SemVer - The current application version.</p>
 </li>
 <li>
-<p><strong><code id="AppUpdater-channel">channel</code></strong> String | “undefined” - Get the update channel. Not applicable for GitHub. Doesn’t return <code>channel</code> from the update configuration, only if was previously set.</p>
+<p><strong><code id="AppUpdater-channel">channel</code></strong> String | “undefined” - Get the update channel. Doesn’t return <code>channel</code> from the update configuration, only if was previously set.</p>
 </li>
 <li>
 <p><strong><code id="AppUpdater-requestHeaders">requestHeaders</code></strong> [key: string]: string | “undefined” - The request headers.</p>
@@ -1629,12 +3423,12 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 </ul>
 <p><strong>Methods</strong></p>
 <ul>
-<li><a href="#AppUpdater">.AppUpdater</a> ⇐ <code>module:typed-emitter/index.TypedEventEmitter</code>
+<li><a href="#AppUpdater">.AppUpdater</a> ⇐ <code>module:tiny-typed-emitter/lib/index.TypedEmitter</code>
 <ul>
 <li><a href="#module_electron-updater.AppUpdater+addAuthHeader"><code>.addAuthHeader(token)</code></a></li>
 <li><a href="#module_electron-updater.AppUpdater+checkForUpdates"><code>.checkForUpdates()</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
 <li><a href="#module_electron-updater.AppUpdater+checkForUpdatesAndNotify"><code>.checkForUpdatesAndNotify(downloadNotification)</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
-<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></li>
 <li><a href="#module_electron-updater.AppUpdater+getFeedURL"><code>.getFeedURL()</code></a> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></li>
 <li><a href="#module_electron-updater.AppUpdater+setFeedURL"><code>.setFeedURL(options)</code></a></li>
 <li><a href="#module_electron-updater.AppUpdater+isUpdaterActive"><code>.isUpdaterActive()</code></a> ⇒ <code>Boolean</code></li>
@@ -1679,9 +3473,9 @@ return path.join(target.outDir, <code>__${target.name}-${getArtifactArchName(arc
 </tbody>
 </table>
 <p><a name="module_electron-updater.AppUpdater+downloadUpdate"></a></p>
-<h3 id="appupdater.downloadupdate(cancellationtoken)-%E2%87%92-promise%3Cany%3E"><code>appUpdater.downloadUpdate(cancellationToken)</code> ⇒ <code>Promise&lt;any&gt;</code></h3>
+<h3 id="appupdater.downloadupdate(cancellationtoken)-%E2%87%92-promise%3Carray%3Cstring%3E%3E"><code>appUpdater.downloadUpdate(cancellationToken)</code> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></h3>
 <p>Start downloading update manually. You can use this method if <code>autoDownload</code> option is set to <code>false</code>.</p>
-<p><strong>Returns</strong>: <code>Promise&lt;any&gt;</code> - Path to downloaded file.</p>
+<p><strong>Returns</strong>: <code>Promise&lt;Array&lt;String&gt;&gt;</code> - Paths to downloaded files.</p>
 <table>
 <thead>
 <tr>
@@ -1742,10 +3536,271 @@ This is different from the normal quit event sequence.</p>
 <tr>
 <td>isForceRunAfter</td>
 <td><code>Boolean</code></td>
-<td>Run the app after finish even on silent install. Not applicable for macOS. Ignored if <code>isSilent</code> is set to <code>false</code>.</td>
+<td>Run the app after finish even on silent install. Not applicable for macOS. Ignored if <code>isSilent</code> is set to <code>false</code>(In this case you can still set <code>autoRunAppAfterInstall</code> to <code>false</code> to prevent run the app after finish).</td>
 </tr>
 </tbody>
 </table>
+<p><a name="BaseUpdater"></a></p>
+<h2 id="baseupdater-%E2%87%90-appupdater">BaseUpdater ⇐ <code><a href="#AppUpdater">AppUpdater</a></code></h2>
+<p><strong>Kind</strong>: class of <a href="#module_electron-updater"><code>electron-updater</code></a><br/>
+<strong>Extends</strong>: <code><a href="#AppUpdater">AppUpdater</a></code></p>
+<ul>
+<li><a href="#BaseUpdater">.BaseUpdater</a> ⇐ <code><a href="#AppUpdater">AppUpdater</a></code>
+<ul>
+<li><a href="#module_electron-updater.BaseUpdater+install"><code>.install(isSilent, isForceRunAfter)</code></a> ⇒ <code>Boolean</code></li>
+<li><a href="#module_electron-updater.BaseUpdater+quitAndInstall"><code>.quitAndInstall(isSilent, isForceRunAfter)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+addAuthHeader"><code>.addAuthHeader(token)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdates"><code>.checkForUpdates()</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdatesAndNotify"><code>.checkForUpdatesAndNotify(downloadNotification)</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+getFeedURL"><code>.getFeedURL()</code></a> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></li>
+<li><a href="#module_electron-updater.AppUpdater+setFeedURL"><code>.setFeedURL(options)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+isUpdaterActive"><code>.isUpdaterActive()</code></a> ⇒ <code>Boolean</code></li>
+</ul>
+</li>
+</ul>
+<p><a name="module_electron-updater.BaseUpdater+install"></a></p>
+<h3 id="baseupdater.install(issilent%2C-isforcerunafter)-%E2%87%92-boolean"><code>baseUpdater.install(isSilent, isForceRunAfter)</code> ⇒ <code>Boolean</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>isSilent</td>
+</tr>
+<tr>
+<td>isForceRunAfter</td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.BaseUpdater+quitAndInstall"></a></p>
+<h3 id="baseupdater.quitandinstall(issilent%2C-isforcerunafter)"><code>baseUpdater.quitAndInstall(isSilent, isForceRunAfter)</code></h3>
+<p><strong>Overrides</strong>: <a href="#module_electron-updater.AppUpdater+quitAndInstall"><code>quitAndInstall</code></a></p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>isSilent</td>
+</tr>
+<tr>
+<td>isForceRunAfter</td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+addAuthHeader"></a></p>
+<h3 id="baseupdater.addauthheader(token)"><code>baseUpdater.addAuthHeader(token)</code></h3>
+<p>Shortcut for explicitly adding auth tokens to request headers</p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>token</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+checkForUpdates"></a></p>
+<h3 id="baseupdater.checkforupdates()-%E2%87%92-promise%3C-%7C-updatecheckresult%3E"><code>baseUpdater.checkForUpdates()</code> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></h3>
+<p>Asks the server whether there is an update.</p>
+<p><a name="module_electron-updater.AppUpdater+checkForUpdatesAndNotify"></a></p>
+<h3 id="baseupdater.checkforupdatesandnotify(downloadnotification)-%E2%87%92-promise%3C-%7C-updatecheckresult%3E"><code>baseUpdater.checkForUpdatesAndNotify(downloadNotification)</code> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>downloadNotification</td>
+<td><code>module:electron-updater/out/AppUpdater.DownloadNotification</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+downloadUpdate"></a></p>
+<h3 id="baseupdater.downloadupdate(cancellationtoken)-%E2%87%92-promise%3Carray%3Cstring%3E%3E"><code>baseUpdater.downloadUpdate(cancellationToken)</code> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></h3>
+<p>Start downloading update manually. You can use this method if <code>autoDownload</code> option is set to <code>false</code>.</p>
+<p><strong>Returns</strong>: <code>Promise&lt;Array&lt;String&gt;&gt;</code> - Paths to downloaded files.</p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cancellationToken</td>
+<td><code>CancellationToken</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+getFeedURL"></a></p>
+<h3 id="baseupdater.getfeedurl()-%E2%87%92-undefined-%7C-null-%7C-string"><code>baseUpdater.getFeedURL()</code> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></h3>
+<p><a name="module_electron-updater.AppUpdater+setFeedURL"></a></p>
+<h3 id="baseupdater.setfeedurl(options)"><code>baseUpdater.setFeedURL(options)</code></h3>
+<p>Configure update provider. If value is <code>string</code>, <a href="/configuration/publish#genericserveroptions">GenericServerOptions</a> will be set with value as <code>url</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>options</td>
+<td><code><a href="/configuration/publish#publishconfiguration">PublishConfiguration</a></code> | <code>String</code> | <code><a href="/configuration/publish#githuboptions">GithubOptions</a></code> | <code><a href="/configuration/publish#s3options">S3Options</a></code> | <code><a href="/configuration/publish#spacesoptions">SpacesOptions</a></code> | <code><a href="/configuration/publish#genericserveroptions">GenericServerOptions</a></code> | <code>module:builder-util-runtime/out/publishOptions.CustomPublishOptions</code> | <code>module:builder-util-runtime/out/publishOptions.KeygenOptions</code> | <code><a href="/configuration/publish#snapstoreoptions">SnapStoreOptions</a></code> | <code>module:builder-util-runtime/out/publishOptions.BitbucketOptions</code> | <code>String</code></td>
+<td>If you want to override configuration in the <code>app-update.yml</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+isUpdaterActive"></a></p>
+<h3 id="baseupdater.isupdateractive()-%E2%87%92-boolean"><code>baseUpdater.isUpdaterActive()</code> ⇒ <code>Boolean</code></h3>
+<p><a name="DebUpdater"></a></p>
+<h2 id="debupdater-%E2%87%90-baseupdater">DebUpdater ⇐ <code><a href="#BaseUpdater">BaseUpdater</a></code></h2>
+<p><strong>Kind</strong>: class of <a href="#module_electron-updater"><code>electron-updater</code></a><br/>
+<strong>Extends</strong>: <code><a href="#BaseUpdater">BaseUpdater</a></code></p>
+<ul>
+<li><a href="#DebUpdater">.DebUpdater</a> ⇐ <code><a href="#BaseUpdater">BaseUpdater</a></code>
+<ul>
+<li><a href="#module_electron-updater.BaseUpdater+install"><code>.install(isSilent, isForceRunAfter)</code></a> ⇒ <code>Boolean</code></li>
+<li><a href="#module_electron-updater.BaseUpdater+quitAndInstall"><code>.quitAndInstall(isSilent, isForceRunAfter)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+addAuthHeader"><code>.addAuthHeader(token)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdates"><code>.checkForUpdates()</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdatesAndNotify"><code>.checkForUpdatesAndNotify(downloadNotification)</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+getFeedURL"><code>.getFeedURL()</code></a> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></li>
+<li><a href="#module_electron-updater.AppUpdater+setFeedURL"><code>.setFeedURL(options)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+isUpdaterActive"><code>.isUpdaterActive()</code></a> ⇒ <code>Boolean</code></li>
+</ul>
+</li>
+</ul>
+<p><a name="module_electron-updater.BaseUpdater+install"></a></p>
+<h3 id="debupdater.install(issilent%2C-isforcerunafter)-%E2%87%92-boolean"><code>debUpdater.install(isSilent, isForceRunAfter)</code> ⇒ <code>Boolean</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>isSilent</td>
+</tr>
+<tr>
+<td>isForceRunAfter</td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.BaseUpdater+quitAndInstall"></a></p>
+<h3 id="debupdater.quitandinstall(issilent%2C-isforcerunafter)"><code>debUpdater.quitAndInstall(isSilent, isForceRunAfter)</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>isSilent</td>
+</tr>
+<tr>
+<td>isForceRunAfter</td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+addAuthHeader"></a></p>
+<h3 id="debupdater.addauthheader(token)"><code>debUpdater.addAuthHeader(token)</code></h3>
+<p>Shortcut for explicitly adding auth tokens to request headers</p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>token</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+checkForUpdates"></a></p>
+<h3 id="debupdater.checkforupdates()-%E2%87%92-promise%3C-%7C-updatecheckresult%3E"><code>debUpdater.checkForUpdates()</code> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></h3>
+<p>Asks the server whether there is an update.</p>
+<p><a name="module_electron-updater.AppUpdater+checkForUpdatesAndNotify"></a></p>
+<h3 id="debupdater.checkforupdatesandnotify(downloadnotification)-%E2%87%92-promise%3C-%7C-updatecheckresult%3E"><code>debUpdater.checkForUpdatesAndNotify(downloadNotification)</code> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>downloadNotification</td>
+<td><code>module:electron-updater/out/AppUpdater.DownloadNotification</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+downloadUpdate"></a></p>
+<h3 id="debupdater.downloadupdate(cancellationtoken)-%E2%87%92-promise%3Carray%3Cstring%3E%3E"><code>debUpdater.downloadUpdate(cancellationToken)</code> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></h3>
+<p>Start downloading update manually. You can use this method if <code>autoDownload</code> option is set to <code>false</code>.</p>
+<p><strong>Returns</strong>: <code>Promise&lt;Array&lt;String&gt;&gt;</code> - Paths to downloaded files.</p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cancellationToken</td>
+<td><code>CancellationToken</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+getFeedURL"></a></p>
+<h3 id="debupdater.getfeedurl()-%E2%87%92-undefined-%7C-null-%7C-string"><code>debUpdater.getFeedURL()</code> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></h3>
+<p><a name="module_electron-updater.AppUpdater+setFeedURL"></a></p>
+<h3 id="debupdater.setfeedurl(options)"><code>debUpdater.setFeedURL(options)</code></h3>
+<p>Configure update provider. If value is <code>string</code>, <a href="/configuration/publish#genericserveroptions">GenericServerOptions</a> will be set with value as <code>url</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>options</td>
+<td><code><a href="/configuration/publish#publishconfiguration">PublishConfiguration</a></code> | <code>String</code> | <code><a href="/configuration/publish#githuboptions">GithubOptions</a></code> | <code><a href="/configuration/publish#s3options">S3Options</a></code> | <code><a href="/configuration/publish#spacesoptions">SpacesOptions</a></code> | <code><a href="/configuration/publish#genericserveroptions">GenericServerOptions</a></code> | <code>module:builder-util-runtime/out/publishOptions.CustomPublishOptions</code> | <code>module:builder-util-runtime/out/publishOptions.KeygenOptions</code> | <code><a href="/configuration/publish#snapstoreoptions">SnapStoreOptions</a></code> | <code>module:builder-util-runtime/out/publishOptions.BitbucketOptions</code> | <code>String</code></td>
+<td>If you want to override configuration in the <code>app-update.yml</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+isUpdaterActive"></a></p>
+<h3 id="debupdater.isupdateractive()-%E2%87%92-boolean"><code>debUpdater.isUpdaterActive()</code> ⇒ <code>Boolean</code></h3>
 <p><a name="MacUpdater"></a></p>
 <h2 id="macupdater-%E2%87%90-appupdater">MacUpdater ⇐ <code><a href="#AppUpdater">AppUpdater</a></code></h2>
 <p><strong>Kind</strong>: class of <a href="#module_electron-updater"><code>electron-updater</code></a><br/>
@@ -1757,7 +3812,7 @@ This is different from the normal quit event sequence.</p>
 <li><a href="#module_electron-updater.AppUpdater+addAuthHeader"><code>.addAuthHeader(token)</code></a></li>
 <li><a href="#module_electron-updater.AppUpdater+checkForUpdates"><code>.checkForUpdates()</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
 <li><a href="#module_electron-updater.AppUpdater+checkForUpdatesAndNotify"><code>.checkForUpdatesAndNotify(downloadNotification)</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
-<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;any&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></li>
 <li><a href="#module_electron-updater.AppUpdater+getFeedURL"><code>.getFeedURL()</code></a> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></li>
 <li><a href="#module_electron-updater.AppUpdater+setFeedURL"><code>.setFeedURL(options)</code></a></li>
 <li><a href="#module_electron-updater.AppUpdater+isUpdaterActive"><code>.isUpdaterActive()</code></a> ⇒ <code>Boolean</code></li>
@@ -1804,9 +3859,9 @@ This is different from the normal quit event sequence.</p>
 </tbody>
 </table>
 <p><a name="module_electron-updater.AppUpdater+downloadUpdate"></a></p>
-<h3 id="macupdater.downloadupdate(cancellationtoken)-%E2%87%92-promise%3Cany%3E"><code>macUpdater.downloadUpdate(cancellationToken)</code> ⇒ <code>Promise&lt;any&gt;</code></h3>
+<h3 id="macupdater.downloadupdate(cancellationtoken)-%E2%87%92-promise%3Carray%3Cstring%3E%3E"><code>macUpdater.downloadUpdate(cancellationToken)</code> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></h3>
 <p>Start downloading update manually. You can use this method if <code>autoDownload</code> option is set to <code>false</code>.</p>
-<p><strong>Returns</strong>: <code>Promise&lt;any&gt;</code> - Path to downloaded file.</p>
+<p><strong>Returns</strong>: <code>Promise&lt;Array&lt;String&gt;&gt;</code> - Paths to downloaded files.</p>
 <table>
 <thead>
 <tr>
@@ -1845,13 +3900,141 @@ This is different from the normal quit event sequence.</p>
 <p><a name="module_electron-updater.AppUpdater+isUpdaterActive"></a></p>
 <h3 id="macupdater.isupdateractive()-%E2%87%92-boolean"><code>macUpdater.isUpdaterActive()</code> ⇒ <code>Boolean</code></h3>
 <p><a name="NsisUpdater"></a></p>
-<h2 id="nsisupdater-%E2%87%90-module%3Aelectron-updater%2Fout%2Fbaseupdater.baseupdater">NsisUpdater ⇐ <code>module:electron-updater/out/BaseUpdater.BaseUpdater</code></h2>
+<h2 id="nsisupdater-%E2%87%90-baseupdater">NsisUpdater ⇐ <code><a href="#BaseUpdater">BaseUpdater</a></code></h2>
 <p><strong>Kind</strong>: class of <a href="#module_electron-updater"><code>electron-updater</code></a><br/>
-<strong>Extends</strong>: <code>module:electron-updater/out/BaseUpdater.BaseUpdater</code><br>
+<strong>Extends</strong>: <code><a href="#BaseUpdater">BaseUpdater</a></code><br>
 <strong>Properties</strong></p>
 <ul>
 <li><code id="NsisUpdater-installDirectory">installDirectory</code> String - Specify custom install directory path</li>
+<li><strong><code id="NsisUpdater-verifyUpdateCodeSignature">verifyUpdateCodeSignature</code></strong> module:electron-updater.__type - The verifyUpdateCodeSignature. You can pass <a href="https://github.com/beyondkmp/win-verify-trust">win-verify-signature</a> or another custom verify function: <code> (publisherName: string[], path: string) =&gt; Promise&lt;string | null&gt;</code>. The default verify function uses <a href="https://github.com/electron-userland/electron-builder/blob/master/packages/electron-updater/src/windowsExecutableCodeSignatureVerifier.ts">windowsExecutableCodeSignatureVerifier</a></li>
 </ul>
+<p><strong>Methods</strong></p>
+<ul>
+<li><a href="#NsisUpdater">.NsisUpdater</a> ⇐ <code><a href="#BaseUpdater">BaseUpdater</a></code>
+<ul>
+<li><a href="#module_electron-updater.BaseUpdater+install"><code>.install(isSilent, isForceRunAfter)</code></a> ⇒ <code>Boolean</code></li>
+<li><a href="#module_electron-updater.BaseUpdater+quitAndInstall"><code>.quitAndInstall(isSilent, isForceRunAfter)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+addAuthHeader"><code>.addAuthHeader(token)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdates"><code>.checkForUpdates()</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdatesAndNotify"><code>.checkForUpdatesAndNotify(downloadNotification)</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+getFeedURL"><code>.getFeedURL()</code></a> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></li>
+<li><a href="#module_electron-updater.AppUpdater+setFeedURL"><code>.setFeedURL(options)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+isUpdaterActive"><code>.isUpdaterActive()</code></a> ⇒ <code>Boolean</code></li>
+</ul>
+</li>
+</ul>
+<p><a name="module_electron-updater.BaseUpdater+install"></a></p>
+<h3 id="nsisupdater.install(issilent%2C-isforcerunafter)-%E2%87%92-boolean"><code>nsisUpdater.install(isSilent, isForceRunAfter)</code> ⇒ <code>Boolean</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>isSilent</td>
+</tr>
+<tr>
+<td>isForceRunAfter</td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.BaseUpdater+quitAndInstall"></a></p>
+<h3 id="nsisupdater.quitandinstall(issilent%2C-isforcerunafter)"><code>nsisUpdater.quitAndInstall(isSilent, isForceRunAfter)</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>isSilent</td>
+</tr>
+<tr>
+<td>isForceRunAfter</td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+addAuthHeader"></a></p>
+<h3 id="nsisupdater.addauthheader(token)"><code>nsisUpdater.addAuthHeader(token)</code></h3>
+<p>Shortcut for explicitly adding auth tokens to request headers</p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>token</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+checkForUpdates"></a></p>
+<h3 id="nsisupdater.checkforupdates()-%E2%87%92-promise%3C-%7C-updatecheckresult%3E"><code>nsisUpdater.checkForUpdates()</code> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></h3>
+<p>Asks the server whether there is an update.</p>
+<p><a name="module_electron-updater.AppUpdater+checkForUpdatesAndNotify"></a></p>
+<h3 id="nsisupdater.checkforupdatesandnotify(downloadnotification)-%E2%87%92-promise%3C-%7C-updatecheckresult%3E"><code>nsisUpdater.checkForUpdatesAndNotify(downloadNotification)</code> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>downloadNotification</td>
+<td><code>module:electron-updater/out/AppUpdater.DownloadNotification</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+downloadUpdate"></a></p>
+<h3 id="nsisupdater.downloadupdate(cancellationtoken)-%E2%87%92-promise%3Carray%3Cstring%3E%3E"><code>nsisUpdater.downloadUpdate(cancellationToken)</code> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></h3>
+<p>Start downloading update manually. You can use this method if <code>autoDownload</code> option is set to <code>false</code>.</p>
+<p><strong>Returns</strong>: <code>Promise&lt;Array&lt;String&gt;&gt;</code> - Paths to downloaded files.</p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cancellationToken</td>
+<td><code>CancellationToken</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+getFeedURL"></a></p>
+<h3 id="nsisupdater.getfeedurl()-%E2%87%92-undefined-%7C-null-%7C-string"><code>nsisUpdater.getFeedURL()</code> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></h3>
+<p><a name="module_electron-updater.AppUpdater+setFeedURL"></a></p>
+<h3 id="nsisupdater.setfeedurl(options)"><code>nsisUpdater.setFeedURL(options)</code></h3>
+<p>Configure update provider. If value is <code>string</code>, <a href="/configuration/publish#genericserveroptions">GenericServerOptions</a> will be set with value as <code>url</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>options</td>
+<td><code><a href="/configuration/publish#publishconfiguration">PublishConfiguration</a></code> | <code>String</code> | <code><a href="/configuration/publish#githuboptions">GithubOptions</a></code> | <code><a href="/configuration/publish#s3options">S3Options</a></code> | <code><a href="/configuration/publish#spacesoptions">SpacesOptions</a></code> | <code><a href="/configuration/publish#genericserveroptions">GenericServerOptions</a></code> | <code>module:builder-util-runtime/out/publishOptions.CustomPublishOptions</code> | <code>module:builder-util-runtime/out/publishOptions.KeygenOptions</code> | <code><a href="/configuration/publish#snapstoreoptions">SnapStoreOptions</a></code> | <code>module:builder-util-runtime/out/publishOptions.BitbucketOptions</code> | <code>String</code></td>
+<td>If you want to override configuration in the <code>app-update.yml</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+isUpdaterActive"></a></p>
+<h3 id="nsisupdater.isupdateractive()-%E2%87%92-boolean"><code>nsisUpdater.isUpdaterActive()</code> ⇒ <code>Boolean</code></h3>
 <p><a name="Provider"></a></p>
 <h2 id="provider">Provider</h2>
 <p><strong>Kind</strong>: class of <a href="#module_electron-updater"><code>electron-updater</code></a><br/>
@@ -1904,6 +4087,136 @@ This is different from the normal quit event sequence.</p>
 </tr>
 </tbody>
 </table>
+<p><a name="RpmUpdater"></a></p>
+<h2 id="rpmupdater-%E2%87%90-baseupdater">RpmUpdater ⇐ <code><a href="#BaseUpdater">BaseUpdater</a></code></h2>
+<p><strong>Kind</strong>: class of <a href="#module_electron-updater"><code>electron-updater</code></a><br/>
+<strong>Extends</strong>: <code><a href="#BaseUpdater">BaseUpdater</a></code></p>
+<ul>
+<li><a href="#RpmUpdater">.RpmUpdater</a> ⇐ <code><a href="#BaseUpdater">BaseUpdater</a></code>
+<ul>
+<li><a href="#module_electron-updater.BaseUpdater+install"><code>.install(isSilent, isForceRunAfter)</code></a> ⇒ <code>Boolean</code></li>
+<li><a href="#module_electron-updater.BaseUpdater+quitAndInstall"><code>.quitAndInstall(isSilent, isForceRunAfter)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+addAuthHeader"><code>.addAuthHeader(token)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdates"><code>.checkForUpdates()</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+checkForUpdatesAndNotify"><code>.checkForUpdatesAndNotify(downloadNotification)</code></a> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+downloadUpdate"><code>.downloadUpdate(cancellationToken)</code></a> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></li>
+<li><a href="#module_electron-updater.AppUpdater+getFeedURL"><code>.getFeedURL()</code></a> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></li>
+<li><a href="#module_electron-updater.AppUpdater+setFeedURL"><code>.setFeedURL(options)</code></a></li>
+<li><a href="#module_electron-updater.AppUpdater+isUpdaterActive"><code>.isUpdaterActive()</code></a> ⇒ <code>Boolean</code></li>
+</ul>
+</li>
+</ul>
+<p><a name="module_electron-updater.BaseUpdater+install"></a></p>
+<h3 id="rpmupdater.install(issilent%2C-isforcerunafter)-%E2%87%92-boolean"><code>rpmUpdater.install(isSilent, isForceRunAfter)</code> ⇒ <code>Boolean</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>isSilent</td>
+</tr>
+<tr>
+<td>isForceRunAfter</td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.BaseUpdater+quitAndInstall"></a></p>
+<h3 id="rpmupdater.quitandinstall(issilent%2C-isforcerunafter)"><code>rpmUpdater.quitAndInstall(isSilent, isForceRunAfter)</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>isSilent</td>
+</tr>
+<tr>
+<td>isForceRunAfter</td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+addAuthHeader"></a></p>
+<h3 id="rpmupdater.addauthheader(token)"><code>rpmUpdater.addAuthHeader(token)</code></h3>
+<p>Shortcut for explicitly adding auth tokens to request headers</p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>token</td>
+<td><code>String</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+checkForUpdates"></a></p>
+<h3 id="rpmupdater.checkforupdates()-%E2%87%92-promise%3C-%7C-updatecheckresult%3E"><code>rpmUpdater.checkForUpdates()</code> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></h3>
+<p>Asks the server whether there is an update.</p>
+<p><a name="module_electron-updater.AppUpdater+checkForUpdatesAndNotify"></a></p>
+<h3 id="rpmupdater.checkforupdatesandnotify(downloadnotification)-%E2%87%92-promise%3C-%7C-updatecheckresult%3E"><code>rpmUpdater.checkForUpdatesAndNotify(downloadNotification)</code> ⇒ <code>Promise&lt; | <a href="#UpdateCheckResult">UpdateCheckResult</a>&gt;</code></h3>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>downloadNotification</td>
+<td><code>module:electron-updater/out/AppUpdater.DownloadNotification</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+downloadUpdate"></a></p>
+<h3 id="rpmupdater.downloadupdate(cancellationtoken)-%E2%87%92-promise%3Carray%3Cstring%3E%3E"><code>rpmUpdater.downloadUpdate(cancellationToken)</code> ⇒ <code>Promise&lt;Array&lt;String&gt;&gt;</code></h3>
+<p>Start downloading update manually. You can use this method if <code>autoDownload</code> option is set to <code>false</code>.</p>
+<p><strong>Returns</strong>: <code>Promise&lt;Array&lt;String&gt;&gt;</code> - Paths to downloaded files.</p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cancellationToken</td>
+<td><code>CancellationToken</code></td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+getFeedURL"></a></p>
+<h3 id="rpmupdater.getfeedurl()-%E2%87%92-undefined-%7C-null-%7C-string"><code>rpmUpdater.getFeedURL()</code> ⇒ <code>undefined</code> | <code>null</code> | <code>String</code></h3>
+<p><a name="module_electron-updater.AppUpdater+setFeedURL"></a></p>
+<h3 id="rpmupdater.setfeedurl(options)"><code>rpmUpdater.setFeedURL(options)</code></h3>
+<p>Configure update provider. If value is <code>string</code>, <a href="/configuration/publish#genericserveroptions">GenericServerOptions</a> will be set with value as <code>url</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Param</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>options</td>
+<td><code><a href="/configuration/publish#publishconfiguration">PublishConfiguration</a></code> | <code>String</code> | <code><a href="/configuration/publish#githuboptions">GithubOptions</a></code> | <code><a href="/configuration/publish#s3options">S3Options</a></code> | <code><a href="/configuration/publish#spacesoptions">SpacesOptions</a></code> | <code><a href="/configuration/publish#genericserveroptions">GenericServerOptions</a></code> | <code>module:builder-util-runtime/out/publishOptions.CustomPublishOptions</code> | <code>module:builder-util-runtime/out/publishOptions.KeygenOptions</code> | <code><a href="/configuration/publish#snapstoreoptions">SnapStoreOptions</a></code> | <code>module:builder-util-runtime/out/publishOptions.BitbucketOptions</code> | <code>String</code></td>
+<td>If you want to override configuration in the <code>app-update.yml</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><a name="module_electron-updater.AppUpdater+isUpdaterActive"></a></p>
+<h3 id="rpmupdater.isupdateractive()-%E2%87%92-boolean"><code>rpmUpdater.isUpdaterActive()</code> ⇒ <code>Boolean</code></h3>
 <p><a name="UpdaterSignal"></a></p>
 <h2 id="updatersignal">UpdaterSignal</h2>
 <p><strong>Kind</strong>: class of <a href="#module_electron-updater"><code>electron-updater</code></a><br/></p>

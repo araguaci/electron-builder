@@ -1,6 +1,5 @@
-import { path7za } from "7zip-bin"
 import BluebirdPromise from "bluebird-lst"
-import { Arch, asArray, AsyncTaskManager, exec, executeAppBuilder, getPlatformIconFileName, InvalidConfigurationError, log, spawnAndWrite, use } from "builder-util"
+import { Arch, asArray, AsyncTaskManager, exec, executeAppBuilder, getPlatformIconFileName, InvalidConfigurationError, log, spawnAndWrite, use, getPath7za } from "builder-util"
 import { CURRENT_APP_INSTALLER_FILE_NAME, CURRENT_APP_PACKAGE_FILE_NAME, PackageFileInfo, UUID } from "builder-util-runtime"
 import { exists, statOrNull, walk } from "builder-util/out/fs"
 import _debug from "debug"
@@ -42,8 +41,14 @@ export class NsisTarget extends Target {
 
   /** @private */
   readonly archs: Map<Arch, string> = new Map()
+  readonly isAsyncSupported = false
 
-  constructor(readonly packager: WinPackager, readonly outDir: string, targetName: string, protected readonly packageHelper: AppPackageHelper) {
+  constructor(
+    readonly packager: WinPackager,
+    readonly outDir: string,
+    targetName: string,
+    protected readonly packageHelper: AppPackageHelper
+  ) {
     super(targetName)
 
     this.packageHelper.refCount++
@@ -229,7 +234,7 @@ export class NsisTarget extends Target {
       defines.APP_BUILD_DIR = archs.get(archs.keys().next().value)
     } else {
       await BluebirdPromise.map(archs.keys(), async arch => {
-        const fileInfo = await this.packageHelper.packArch(arch, this)
+        const { fileInfo, unpackedSize } = await this.packageHelper.packArch(arch, this)
         const file = fileInfo.path
         const defineKey = arch === Arch.x64 ? "APP_64" : arch === Arch.arm64 ? "APP_ARM64" : "APP_32"
         defines[defineKey] = file
@@ -240,12 +245,16 @@ export class NsisTarget extends Target {
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         const defineHashKey = `${defineKey}_HASH` as "APP_64_HASH" | "APP_ARM64_HASH" | "APP_32_HASH"
         defines[defineHashKey] = Buffer.from(fileInfo.sha512, "base64").toString("hex").toUpperCase()
+        // NSIS accepts size in KiloBytes and supports only whole numbers
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+        const defineUnpackedSizeKey = `${defineKey}_UNPACKED_SIZE` as "APP_64_UNPACKED_SIZE" | "APP_ARM64_UNPACKED_SIZE" | "APP_32_UNPACKED_SIZE"
+        defines[defineUnpackedSizeKey] = Math.ceil(unpackedSize / 1024).toString()
 
         if (this.isWebInstaller) {
           await packager.dispatchArtifactCreated(file, this, arch)
           packageFiles[Arch[arch]] = fileInfo
         }
-
+        const path7za = await getPath7za()
         const archiveInfo = (await exec(path7za, ["l", file])).trim()
         // after adding blockmap data will be "Warnings: 1" in the end of output
         const match = /(\d+)\s+\d+\s+\d+\s+files/.exec(archiveInfo)
@@ -393,7 +402,7 @@ export class NsisTarget extends Target {
     } else {
       await execWine(installerPath, null, [], { env: { __COMPAT_LAYER: "RunAsInvoker" } })
     }
-    await packager.sign(uninstallerPath, "  Signing NSIS uninstaller")
+    await packager.sign(uninstallerPath, "signing NSIS uninstaller")
 
     delete defines.BUILD_UNINSTALLER
     // platform-specific path, not wine
@@ -470,6 +479,10 @@ export class NsisTarget extends Target {
       defines.INSTALL_MODE_PER_ALL_USERS = null
     }
 
+    if (options.selectPerMachineByDefault === true) {
+      defines.INSTALL_MODE_PER_ALL_USERS_DEFAULT = null
+    }
+
     if (!oneClick || options.perMachine === true) {
       defines.INSTALL_MODE_PER_ALL_USERS_REQUIRED = null
     }
@@ -479,6 +492,10 @@ export class NsisTarget extends Target {
         throw new InvalidConfigurationError("allowToChangeInstallationDirectory makes sense only for assisted installer (please set oneClick to false)")
       }
       defines.allowToChangeInstallationDirectory = null
+    }
+
+    if (options.removeDefaultUninstallWelcomePage) {
+      defines.removeDefaultUninstallWelcomePage = null
     }
 
     const commonOptions = getEffectiveOptions(options, packager)
@@ -552,7 +569,7 @@ export class NsisTarget extends Target {
     const args: Array<string> = this.options.warningsAsErrors === false ? [] : ["-WX"]
     args.push("-INPUTCHARSET", "UTF8")
     for (const name of Object.keys(defines)) {
-      const value = defines[name as keyof Defines]
+      const value: any = defines[name as keyof Defines]
       if (value == null) {
         args.push(`-D${name}`)
       } else {
@@ -749,7 +766,7 @@ async function ensureNotBusy(outFile: string): Promise<void> {
           } else {
             fs.close(fd, () => resolve(true))
           }
-        } catch (error) {
+        } catch (error: any) {
           reject(error)
         }
       })

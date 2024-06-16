@@ -1,5 +1,5 @@
 import BluebirdPromise from "bluebird-lst"
-import { Arch, asArray, AsyncTaskManager, debug, DebugLogger, deepAssign, getArchSuffix, InvalidConfigurationError, isEmptyOrSpaces, log, isEnvTrue } from "builder-util"
+import { Arch, asArray, AsyncTaskManager, debug, DebugLogger, deepAssign, getArchSuffix, InvalidConfigurationError, isEmptyOrSpaces, log } from "builder-util"
 import { defaultArchFromString, getArtifactArchName } from "builder-util/out/arch"
 import { FileTransformer, statOrNull } from "builder-util/out/fs"
 import { orIfFileNotExist } from "builder-util/out/promise"
@@ -7,6 +7,7 @@ import { readdir } from "fs/promises"
 import { Lazy } from "lazy-val"
 import { Minimatch } from "minimatch"
 import * as path from "path"
+import { pathToFileURL } from "url"
 import { AppInfo } from "./appInfo"
 import { checkFileInArchive } from "./asar/asarFileChecker"
 import { AsarPackager } from "./asar/asarUtil"
@@ -59,7 +60,10 @@ export abstract class PlatformPackager<DC extends PlatformSpecificBuildOptions> 
 
   readonly appInfo: AppInfo
 
-  protected constructor(readonly info: Packager, readonly platform: Platform) {
+  protected constructor(
+    readonly info: Packager,
+    readonly platform: Platform
+  ) {
     this.platformSpecificBuildOptions = PlatformPackager.normalizePlatformSpecificBuildOptions((this.config as any)[platform.buildConfigurationKey])
     this.appInfo = this.prepareAppInfo(info.appInfo)
   }
@@ -169,8 +173,8 @@ export abstract class PlatformPackager<DC extends PlatformSpecificBuildOptions> 
     const base = isResources
       ? this.getResourcesDir(appOutDir)
       : this.platform === Platform.MAC
-      ? path.join(appOutDir, `${this.appInfo.productFilename}.app`, "Contents")
-      : appOutDir
+        ? path.join(appOutDir, `${this.appInfo.productFilename}.app`, "Contents")
+        : appOutDir
     return getFileMatchers(this.config, isResources ? "extraResources" : "extraFiles", base, options)
   }
 
@@ -201,7 +205,10 @@ export abstract class PlatformPackager<DC extends PlatformSpecificBuildOptions> 
       return
     }
 
-    const beforePack = resolveFunction(this.config.beforePack, "beforePack")
+    // Due to node-gyp rewriting GYP_MSVS_VERSION when reused across the same session, we must reset the env var: https://github.com/electron-userland/electron-builder/issues/7256
+    delete process.env.GYP_MSVS_VERSION
+
+    const beforePack = await resolveFunction(this.appInfo.type, this.config.beforePack, "beforePack")
     if (beforePack != null) {
       await beforePack({
         appOutDir,
@@ -238,6 +245,18 @@ export abstract class PlatformPackager<DC extends PlatformSpecificBuildOptions> 
       version: framework.version,
     })
 
+    const afterExtract = await resolveFunction(this.appInfo.type, this.config.afterExtract, "afterExtract")
+    if (afterExtract != null) {
+      await afterExtract({
+        appOutDir,
+        outDir,
+        arch,
+        targets,
+        packager: this,
+        electronPlatformName: platformName,
+      })
+    }
+
     const excludePatterns: Array<Minimatch> = []
 
     const computeParsedPatterns = (patterns: Array<FileMatcher> | null) => {
@@ -269,8 +288,8 @@ export abstract class PlatformPackager<DC extends PlatformSpecificBuildOptions> 
       this.platform === Platform.MAC
         ? path.join(appOutDir, framework.distMacOsAppName, "Contents", "Resources")
         : isElectronBased(framework)
-        ? path.join(appOutDir, "resources")
-        : appOutDir
+          ? path.join(appOutDir, "resources")
+          : appOutDir
     const taskManager = new AsyncTaskManager(this.info.cancellationToken)
     this.copyAppFiles(taskManager, asarOptions, resourcesPath, path.join(resourcesPath, "app"), packContext, platformSpecificBuildOptions, excludePatterns, macroExpander)
     await taskManager.awaitTasks()
@@ -309,7 +328,7 @@ export abstract class PlatformPackager<DC extends PlatformSpecificBuildOptions> 
     }
 
     const isAsar = asarOptions != null
-    await this.sanityCheckPackage(appOutDir, isAsar, framework)
+    await this.sanityCheckPackage(appOutDir, isAsar, framework, !!this.config.disableSanityCheckAsar)
     if (sign) {
       await this.doSignAfterPack(outDir, appOutDir, platformName, arch, platformSpecificBuildOptions, targets)
     }
@@ -326,10 +345,14 @@ export abstract class PlatformPackager<DC extends PlatformSpecificBuildOptions> 
       packager: this,
       electronPlatformName: platformName,
     }
-    await this.signApp(packContext, isAsar)
-    const afterSign = resolveFunction(this.config.afterSign, "afterSign")
+    const didSign = await this.signApp(packContext, isAsar)
+    const afterSign = await resolveFunction(this.appInfo.type, this.config.afterSign, "afterSign")
     if (afterSign != null) {
-      await Promise.resolve(afterSign(packContext))
+      if (didSign) {
+        await Promise.resolve(afterSign(packContext))
+      } else {
+        log.warn(null, `skipping "afterSign" hook as no signing occurred, perhaps you intended "afterPack"?`)
+      }
     }
   }
 
@@ -422,8 +445,8 @@ export abstract class PlatformPackager<DC extends PlatformSpecificBuildOptions> 
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected signApp(packContext: AfterPackContext, isAsar: boolean): Promise<any> {
-    return Promise.resolve()
+  protected signApp(packContext: AfterPackContext, isAsar: boolean): Promise<boolean> {
+    return Promise.resolve(false)
   }
 
   getIconPath(): Promise<string | null> {
@@ -497,7 +520,10 @@ export abstract class PlatformPackager<DC extends PlatformSpecificBuildOptions> 
     return path.join(appOutDir, `${this.appInfo.productFilename}.app`, "Contents", "Resources")
   }
 
-  private async checkFileInPackage(resourcesDir: string, file: string, messagePrefix: string, isAsar: boolean) {
+  private async checkFileInPackage(resourcesDir: string, file: string, messagePrefix: string, isAsar: boolean, disableSanityCheckAsar: boolean) {
+    if (isAsar && disableSanityCheckAsar) {
+      return
+    }
     const relativeFile = path.relative(this.info.appDir, path.resolve(this.info.appDir, file))
     if (isAsar) {
       await checkFileInArchive(path.join(resourcesDir, "app.asar"), relativeFile, messagePrefix)
@@ -535,7 +561,7 @@ export abstract class PlatformPackager<DC extends PlatformSpecificBuildOptions> 
     }
   }
 
-  private async sanityCheckPackage(appOutDir: string, isAsar: boolean, framework: Framework): Promise<any> {
+  private async sanityCheckPackage(appOutDir: string, isAsar: boolean, framework: Framework, disableSanityCheckAsar: boolean): Promise<any> {
     const outStat = await statOrNull(appOutDir)
     if (outStat == null) {
       throw new Error(`Output directory "${appOutDir}" does not exist. Seems like a wrong configuration.`)
@@ -548,8 +574,8 @@ export abstract class PlatformPackager<DC extends PlatformSpecificBuildOptions> 
 
     const resourcesDir = this.getResourcesDir(appOutDir)
     const mainFile = (framework.getMainFile == null ? null : framework.getMainFile(this.platform)) || this.info.metadata.main || "index.js"
-    await this.checkFileInPackage(resourcesDir, mainFile, "Application entry file", isAsar)
-    await this.checkFileInPackage(resourcesDir, "package.json", "Application", isAsar)
+    await this.checkFileInPackage(resourcesDir, mainFile, "Application entry file", isAsar, disableSanityCheckAsar)
+    await this.checkFileInPackage(resourcesDir, "package.json", "Application", isAsar, disableSanityCheckAsar)
   }
 
   // tslint:disable-next-line:no-invalid-template-strings
@@ -672,6 +698,7 @@ export abstract class PlatformPackager<DC extends PlatformSpecificBuildOptions> 
 
   // convert if need, validate size (it is a reason why tool is called even if file has target extension (already specified as foo.icns for example))
   async resolveIcon(sources: Array<string>, fallbackSources: Array<string>, outputFormat: IconFormat): Promise<Array<IconInfo>> {
+    const output = this.expandMacro(this.config.directories!.output!)
     const args = [
       "icon",
       "--format",
@@ -681,7 +708,7 @@ export abstract class PlatformPackager<DC extends PlatformSpecificBuildOptions> 
       "--root",
       this.projectDir,
       "--out",
-      path.resolve(this.projectDir, this.config.directories!.output!, `.icon-${outputFormat}`),
+      path.resolve(this.projectDir, output, `.icon-${outputFormat}`),
     ]
     for (const source of sources) {
       args.push("--input", source)
@@ -745,7 +772,21 @@ export function normalizeExt(ext: string) {
   return ext.startsWith(".") ? ext.substring(1) : ext
 }
 
-export function resolveFunction<T>(executor: T | string, name: string): T {
+async function resolveModule<T>(type: string | undefined, name: string): Promise<T> {
+  const extension = path.extname(name).toLowerCase()
+  const isModuleType = type === "module"
+  try {
+    if (extension === ".mjs" || (extension === ".js" && isModuleType)) {
+      const fileUrl = pathToFileURL(name).href
+      return await eval("import('" + fileUrl + "')")
+    }
+  } catch (error) {
+    log.debug({ moduleName: name }, "Unable to dynamically import hook, falling back to `require`")
+  }
+  return require(name)
+}
+
+export async function resolveFunction<T>(type: string | undefined, executor: T | string, name: string): Promise<T> {
   if (executor == null || typeof executor !== "string") {
     return executor
   }
@@ -757,13 +798,12 @@ export function resolveFunction<T>(executor: T | string, name: string): T {
 
   try {
     p = require.resolve(p)
-  } catch (e) {
+  } catch (e: any) {
     debug(e)
     p = path.resolve(p)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const m = require(p)
+  const m: any = await resolveModule(type, p)
   const namedExport = m[name]
   if (namedExport == null) {
     return m.default || m
@@ -778,15 +818,4 @@ export function chooseNotNull(v1: string | null | undefined, v2: string | null |
 
 function capitalizeFirstLetter(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1)
-}
-
-export function isSafeToUnpackElectronOnRemoteBuildServer(packager: PlatformPackager<any>) {
-  if (packager.platform !== Platform.LINUX || packager.config.remoteBuild === false) {
-    return false
-  }
-
-  if (process.platform === "win32" || isEnvTrue(process.env._REMOTE_BUILD)) {
-    return packager.config.electronDist == null && packager.config.electronDownload == null
-  }
-  return false
 }

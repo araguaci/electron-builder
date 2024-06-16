@@ -11,7 +11,7 @@ electron-builder [configuration](#configuration) can be defined
    appId: "com.example.app"
    ```
    
-    `json`, [json5](http://json5.org), [toml](https://github.com/toml-lang/toml) or `js` (exported configuration or function that produces configuration) formats also supported.
+    `json`, [json5](http://json5.org), [toml](https://github.com/toml-lang/toml) or `js`/`ts` (exported configuration or function that produces configuration) formats also supported.
 
     !!! tip
         If you want to use `js` file, do not name it `electron-builder.js`. It will [conflict](https://github.com/electron-userland/electron-builder/issues/6227) with `electron-builder` package name.
@@ -66,7 +66,7 @@ Env file `electron-builder.env` in the current dir ([example](https://github.com
 <hr>
 <ul>
 <li><code id="Configuration-linux">linux</code> <a href="linux">LinuxConfiguration</a> - Options related to how build Linux targets.</li>
-<li><code id="Configuration-deb">deb</code> <a href="/configuration/linux#de">DebOptions</a> - Debian package options.</li>
+<li><code id="Configuration-deb">deb</code> <a href="/configuration/linux#deb">DebOptions</a> - Debian package options.</li>
 <li><code id="Configuration-snap">snap</code> <a href="snap">SnapOptions</a> - Snap options.</li>
 <li><code id="Configuration-appImage">appImage</code> <a href="/configuration/linux#appimageoptions">AppImageOptions</a> - AppImage options.</li>
 <li><code id="Configuration-flatpak">flatpak</code> <a href="flatpak">FlatpakOptions</a> - Flatpak options.</li>
@@ -92,11 +92,20 @@ Env file `electron-builder.env` in the current dir ([example](https://github.com
 <li>
 <p><code id="Configuration-npmRebuild">npmRebuild</code> = <code>true</code> Boolean - Whether to <a href="https://docs.npmjs.com/cli/rebuild">rebuild</a> native dependencies before starting to package the app.</p>
 </li>
+<li>
+<p><code id="Configuration-nativeRebuilder">nativeRebuilder</code> = <code>sequential</code> “legacy” | “sequential” | “parallel” | “undefined” - Use <code>legacy</code> app-builder binary for installing native dependencies, or <code>@electron/rebuild</code> in <code>sequential</code> or <code>parallel</code> compilation modes.</p>
+</li>
+<li>
+<p><code id="Configuration-buildNumber">buildNumber</code> String | “undefined” - The build number. Maps to the <code>--iteration</code> flag for builds using FPM on Linux. If not defined, then it will fallback to <code>BUILD_NUMBER</code> or <code>TRAVIS_BUILD_NUMBER</code> or <code>APPVEYOR_BUILD_NUMBER</code> or <code>CIRCLE_BUILD_NUM</code> or <code>BUILD_BUILDNUMBER</code> or <code>CI_PIPELINE_IID</code> env.</p>
+</li>
 </ul>
 <hr>
 <ul>
 <li>
-<p><code id="Configuration-buildVersion">buildVersion</code> String | “undefined” - The build version. Maps to the <code>CFBundleVersion</code> on macOS, and <code>FileVersion</code> metadata property on Windows. Defaults to the <code>version</code>. If <code>TRAVIS_BUILD_NUMBER</code> or <code>APPVEYOR_BUILD_NUMBER</code> or <code>CIRCLE_BUILD_NUM</code> or <code>BUILD_NUMBER</code> or <code>bamboo.buildNumber</code> or <code>CI_PIPELINE_IID</code> env defined, it will be used as a build version (<code>version.build_number</code>).</p>
+<p><code id="Configuration-buildVersion">buildVersion</code> String | “undefined” - The build version. Maps to the <code>CFBundleVersion</code> on macOS, and <code>FileVersion</code> metadata property on Windows. Defaults to the <code>version</code>. If <code>buildVersion</code> is not defined and <code>buildNumber</code> (or one of the <code>buildNumber</code> envs) is defined, it will be used as a build version (<code>version.buildNumber</code>).</p>
+</li>
+<li>
+<p><code id="Configuration-downloadAlternateFFmpeg">downloadAlternateFFmpeg</code> Boolean - Whether to download the alternate FFmpeg library from Electron’s release assets and replace the default FFmpeg library prior to signing</p>
 </li>
 <li>
 <p><code id="Configuration-electronCompile">electronCompile</code> Boolean - Whether to use <a href="http://github.com/electron/electron-compile">electron-compile</a> to compile app. Defaults to <code>true</code> if <code>electron-compile</code> in the dependencies. And <code>false</code> if in the <code>devDependencies</code> or doesn’t specified.</p>
@@ -138,6 +147,7 @@ Env file `electron-builder.env` in the current dir ([example](https://github.com
 <li><code id="Configuration-launchUiVersion">launchUiVersion</code> Boolean | String | “undefined” - <em>libui-based frameworks only</em> The version of LaunchUI you are packaging for. Applicable for Windows only. Defaults to version suitable for used framework version.</li>
 <li><code id="Configuration-framework">framework</code> String | “undefined” - The framework name. One of <code>electron</code>, <code>proton</code>, <code>libui</code>. Defaults to <code>electron</code>.</li>
 <li><code id="Configuration-beforePack">beforePack</code> module:app-builder-lib/out/configuration.__type | String | “undefined” - The function (or path to file or module id) to be <a href="#beforepack">run before pack</a></li>
+<li><code id="Configuration-afterExtract">afterExtract</code> module:app-builder-lib/out/configuration.__type | String | “undefined” - The function (or path to file or module id) to be <a href="#afterextract">run after the prebuilt Electron binary has been extracted to the output directory</a></li>
 </ul>
 <hr>
 <ul>
@@ -163,19 +173,24 @@ Env file `electron-builder.env` in the current dir ([example](https://github.com
 <p><code id="Configuration-appxManifestCreated">appxManifestCreated</code> module:app-builder-lib/out/configuration.__type | String | “undefined” - Appx manifest created on disk - not packed into .appx package yet.</p>
 </li>
 <li>
-<p><code id="Configuration-onNodeModuleFile">onNodeModuleFile</code> - The function (or path to file or module id) to be <a href="#onnodemodulefile">run on each node module</a> file.</p>
+<p><code id="Configuration-onNodeModuleFile">onNodeModuleFile</code> - The function (or path to file or module id) to be <a href="#onnodemodulefile">run on each node module</a> file. Returning <code>true</code>/<code>false</code> will determine whether to force include or to use the default copier logic</p>
 </li>
 <li>
 <p><code id="Configuration-beforeBuild">beforeBuild</code> (context: BeforeBuildContext) =&gt; Promise | null - The function (or path to file or module id) to be run before dependencies are installed or rebuilt. Works when <code>npmRebuild</code> is set to <code>true</code>. Resolving to <code>false</code> will skip dependencies install or rebuild.</p>
 <p>If provided and <code>node_modules</code> are missing, it will not invoke production dependencies check.</p>
 </li>
-</ul>
-<hr>
-<ul>
-<li><code id="Configuration-remoteBuild">remoteBuild</code> = <code>true</code> Boolean - Whether to build using Electron Build Service if target not supported on current OS.</li>
-<li><code id="Configuration-includePdb">includePdb</code> = <code>false</code> Boolean - Whether to include PDB files.</li>
-<li><code id="Configuration-removePackageScripts">removePackageScripts</code> = <code>true</code> Boolean - Whether to remove <code>scripts</code> field from <code>package.json</code> files.</li>
-<li><code id="Configuration-removePackageKeywords">removePackageKeywords</code> = <code>true</code> Boolean - Whether to remove <code>keywords</code> field from <code>package.json</code> files.</li>
+<li>
+<p><code id="Configuration-includePdb">includePdb</code> = <code>false</code> Boolean - Whether to include PDB files.</p>
+</li>
+<li>
+<p><code id="Configuration-removePackageScripts">removePackageScripts</code> = <code>true</code> Boolean - Whether to remove <code>scripts</code> field from <code>package.json</code> files.</p>
+</li>
+<li>
+<p><code id="Configuration-removePackageKeywords">removePackageKeywords</code> = <code>true</code> Boolean - Whether to remove <code>keywords</code> field from <code>package.json</code> files.</p>
+</li>
+<li>
+<p><code id="Configuration-disableSanityCheckAsar">disableSanityCheckAsar</code> = <code>false</code> Boolean - Whether to disable sanity check asar package (useful for custom electron forks that implement their own encrypted integrity validation)</p>
+</li>
 </ul>
 
 <!-- end of generated block -->

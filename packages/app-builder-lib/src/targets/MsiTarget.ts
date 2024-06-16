@@ -21,23 +21,28 @@ import { createStageDir, getWindowsInstallationDirName } from "./targetUtil"
 const ELECTRON_BUILDER_UPGRADE_CODE_NS_UUID = UUID.parse("d752fe43-5d44-44d5-9fc9-6dd1bf19d5cc")
 const ROOT_DIR_ID = "APPLICATIONFOLDER"
 
-const projectTemplate = new Lazy<(data: any) => string>(async () => {
-  const template = (await readFile(path.join(getTemplatePath("msi"), "template.xml"), "utf8"))
-    .replace(/{{/g, "<%")
-    .replace(/}}/g, "%>")
-    .replace(/\${([^}]+)}/g, "<%=$1%>")
-  return ejs.compile(template)
-})
-
 // WiX doesn't support Mono, so, dontnet462 is required to be installed for wine (preinstalled in our bundled wine)
 export default class MsiTarget extends Target {
-  private readonly vm = process.platform === "win32" ? new VmManager() : new WineVmManager()
+  protected readonly vm = process.platform === "win32" ? new VmManager() : new WineVmManager()
 
   readonly options: MsiOptions = deepAssign(this.packager.platformSpecificBuildOptions, this.packager.config.msi)
 
-  constructor(private readonly packager: WinPackager, readonly outDir: string) {
-    super("msi")
+  constructor(
+    protected readonly packager: WinPackager,
+    readonly outDir: string,
+    name = "msi",
+    isAsyncSupported = true
+  ) {
+    super(name, isAsyncSupported)
   }
+
+  protected projectTemplate = new Lazy<(data: any) => string>(async () => {
+    const template = (await readFile(path.join(getTemplatePath(this.name), "template.xml"), "utf8"))
+      .replace(/{{/g, "<%")
+      .replace(/}}/g, "%>")
+      .replace(/\${([^}]+)}/g, "<%=$1%>")
+    return ejs.compile(template)
+  })
 
   /**
    * A product-specific string that can be used in an [MSI Identifier](https://docs.microsoft.com/en-us/windows/win32/msi/identifier).
@@ -47,11 +52,11 @@ export default class MsiTarget extends Target {
     return sanitizedId.length > 0 ? sanitizedId : "App" + this.upgradeCode.replace(/-/g, "")
   }
 
-  private get iconId() {
+  protected get iconId() {
     return `${this.productMsiIdPrefix}Icon.exe`
   }
 
-  private get upgradeCode(): string {
+  protected get upgradeCode(): string {
     return (this.options.upgradeCode || UUID.v5(this.packager.appInfo.id, ELECTRON_BUILDER_UPGRADE_CODE_NS_UUID)).toUpperCase()
   }
 
@@ -70,9 +75,15 @@ export default class MsiTarget extends Target {
 
     const commonOptions = getEffectiveOptions(this.options, this.packager)
 
+    // wix 4.0.0.5512.2 doesn't support the arm64 architecture so default to x64 when building for arm64.
+    // This will result in an x64 MSI installer that installs an arm64 version of the application. This is a
+    // stopgap until the electron-builder-binaries wix version is upgraded to a version that supports arm64:
+    // https://github.com/electron-userland/electron-builder/issues/6077
+    const wixArch = arch == Arch.arm64 ? Arch.x64 : arch
+
     const projectFile = stageDir.getTempFile("project.wxs")
     const objectFiles = ["project.wixobj"]
-    await writeFile(projectFile, await this.writeManifest(appOutDir, arch, commonOptions))
+    await writeFile(projectFile, await this.writeManifest(appOutDir, wixArch, commonOptions))
 
     await packager.info.callMsiProjectCreated(projectFile)
 
@@ -80,7 +91,7 @@ export default class MsiTarget extends Target {
     const vendorPath = await getBinFromUrl("wix", "4.0.0.5512.2", "/X5poahdCc3199Vt6AP7gluTlT1nxi9cbbHhZhCMEu+ngyP1LiBMn+oZX7QAZVaKeBMc2SjVp7fJqNLqsUnPNQ==")
 
     // noinspection SpellCheckingInspection
-    const candleArgs = ["-arch", arch === Arch.ia32 ? "x86" : arch === Arch.arm64 ? "arm64" : "x64", `-dappDir=${vm.toVmFile(appOutDir)}`].concat(this.getCommonWixArgs())
+    const candleArgs = ["-arch", wixArch === Arch.ia32 ? "x86" : "x64", `-dappDir=${vm.toVmFile(appOutDir)}`].concat(this.getCommonWixArgs())
     candleArgs.push("project.wxs")
     await vm.exec(vm.toVmFile(path.join(vendorPath, "candle.exe")), candleArgs, {
       cwd: stageDir.dir,
@@ -115,7 +126,9 @@ export default class MsiTarget extends Target {
       "-sw1076",
       `-dappDir=${vm.toVmFile(appOutDir)}`,
       // "-dcl:high",
-    ].concat(this.getCommonWixArgs())
+    ]
+      .concat(this.getCommonWixArgs())
+      .concat(this.getAdditionalLightArgs())
 
     // http://windows-installer-xml-wix-toolset.687559.n2.nabble.com/Build-3-5-2229-0-give-me-the-following-error-error-LGHT0216-An-unexpected-Win32-exception-with-errorn-td5707443.html
     if (process.platform !== "win32") {
@@ -134,6 +147,14 @@ export default class MsiTarget extends Target {
     })
   }
 
+  private getAdditionalLightArgs() {
+    const args: Array<string> = []
+    if (this.options.additionalLightArgs != null) {
+      args.push(...this.options.additionalLightArgs)
+    }
+    return args
+  }
+
   private getCommonWixArgs() {
     const args: Array<string> = ["-pedantic"]
     if (this.options.warningsAsErrors !== false) {
@@ -145,22 +166,36 @@ export default class MsiTarget extends Target {
     return args
   }
 
-  private async writeManifest(appOutDir: string, arch: Arch, commonOptions: FinalCommonWindowsInstallerOptions) {
+  protected async writeManifest(appOutDir: string, wixArch: Arch, commonOptions: FinalCommonWindowsInstallerOptions) {
     const appInfo = this.packager.appInfo
     const { files, dirs } = await this.computeFileDeclaration(appOutDir)
+    const options = this.options
+
+    return (await this.projectTemplate.value)({
+      ...(await this.getBaseOptions(commonOptions)),
+      isCreateDesktopShortcut: commonOptions.isCreateDesktopShortcut !== DesktopShortcutCreationPolicy.NEVER,
+      isRunAfterFinish: options.runAfterFinish !== false,
+      // https://stackoverflow.com/questions/1929038/compilation-error-ice80-the-64bitcomponent-uses-32bitdirectory
+      programFilesId: wixArch === Arch.x64 ? "ProgramFiles64Folder" : "ProgramFilesFolder",
+      // wix in the name because special wix format can be used in the name
+      installationDirectoryWixName: getWindowsInstallationDirName(appInfo, commonOptions.isAssisted || commonOptions.isPerMachine === true),
+      dirs,
+      files,
+    })
+  }
+
+  protected async getBaseOptions(commonOptions: FinalCommonWindowsInstallerOptions): Promise<any> {
+    const appInfo = this.packager.appInfo
+    const iconPath = await this.packager.getIconPath()
+    const compression = this.packager.compression
 
     const companyName = appInfo.companyName
     if (!companyName) {
       log.warn(`Manufacturer is not set for MSI — please set "author" in the package.json`)
     }
 
-    const compression = this.packager.compression
-    const options = this.options
-    const iconPath = await this.packager.getIconPath()
-    return (await projectTemplate.value)({
+    return {
       ...commonOptions,
-      isCreateDesktopShortcut: commonOptions.isCreateDesktopShortcut !== DesktopShortcutCreationPolicy.NEVER,
-      isRunAfterFinish: options.runAfterFinish !== false,
       iconPath: iconPath == null ? null : this.vm.toVmFile(iconPath),
       iconId: this.iconId,
       compressionLevel: compression === "store" ? "none" : "high",
@@ -169,13 +204,7 @@ export default class MsiTarget extends Target {
       upgradeCode: this.upgradeCode,
       manufacturer: companyName || appInfo.productName,
       appDescription: appInfo.description,
-      // https://stackoverflow.com/questions/1929038/compilation-error-ice80-the-64bitcomponent-uses-32bitdirectory
-      programFilesId: arch === Arch.x64 ? "ProgramFiles64Folder" : "ProgramFilesFolder",
-      // wix in the name because special wix format can be used in the name
-      installationDirectoryWixName: getWindowsInstallationDirName(appInfo, commonOptions.isAssisted || commonOptions.isPerMachine === true),
-      dirs,
-      files,
-    })
+    }
   }
 
   private async computeFileDeclaration(appOutDir: string) {

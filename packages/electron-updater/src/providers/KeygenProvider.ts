@@ -7,7 +7,11 @@ import { parseUpdateInfo, Provider, ProviderRuntimeOptions, resolveFiles } from 
 export class KeygenProvider extends Provider<UpdateInfo> {
   private readonly baseUrl: URL
 
-  constructor(private readonly configuration: KeygenOptions, private readonly updater: AppUpdater, runtimeOptions: ProviderRuntimeOptions) {
+  constructor(
+    private readonly configuration: KeygenOptions,
+    private readonly updater: AppUpdater,
+    runtimeOptions: ProviderRuntimeOptions
+  ) {
     super({
       ...runtimeOptions,
       isUseMultipleRangeRequest: false,
@@ -33,7 +37,7 @@ export class KeygenProvider extends Provider<UpdateInfo> {
         cancellationToken
       )
       return parseUpdateInfo(updateInfo, channelFile, channelUrl)
-    } catch (e) {
+    } catch (e: any) {
       throw newError(`Unable to find latest version on ${this.toString()}, please ensure release exists: ${e.stack || e.message}`, "ERR_UPDATER_LATEST_VERSION_NOT_FOUND")
     }
   }

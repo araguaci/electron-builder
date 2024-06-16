@@ -47,7 +47,7 @@ test("github allowPrerelease=true", async () => {
   updater.updateConfigPath = await writeUpdateConfig<GithubOptions>({
     provider: "github",
     owner: "mmaietta",
-    repo: "electron-builder-test",
+    repo: "electron-builder-test-prerelease",
   })
   const updateCheckResult = await updater.checkForUpdates()
   expect(removeUnstableProperties(updateCheckResult?.updateInfo)).toMatchSnapshot()
@@ -59,7 +59,7 @@ test("github allowPrerelease=false", async () => {
   updater.updateConfigPath = await writeUpdateConfig<GithubOptions>({
     provider: "github",
     owner: "mmaietta",
-    repo: "electron-builder-test",
+    repo: "electron-builder-test-prerelease",
   })
   const updateCheckResult = await updater.checkForUpdates()
   expect(removeUnstableProperties(updateCheckResult?.updateInfo)).toMatchSnapshot()
@@ -186,6 +186,7 @@ test("file url github", async () => {
   updater.updateConfigPath = await writeUpdateConfig(options)
   updater.signals.updateDownloaded(info => {
     expect(info.downloadedFile).not.toBeNull()
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     delete (info as any).downloadedFile
     expect(info).toMatchSnapshot()
   })
@@ -203,6 +204,7 @@ test("file url github pre-release and fullChangelog", async () => {
   updater.updateConfigPath = await writeUpdateConfig(options)
   updater.signals.updateDownloaded(info => {
     expect(info.downloadedFile).not.toBeNull()
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     delete (info as any).downloadedFile
     expect(info).toMatchSnapshot()
   })
@@ -232,8 +234,9 @@ test("test error", async () => {
 test.skip("test download progress", async () => {
   const updater = await createNsisUpdater("0.0.1")
   updater.updateConfigPath = await writeUpdateConfig({
-    provider: "generic",
-    url: "https://develar.s3.amazonaws.com/test",
+    provider: "github",
+    owner: "develar",
+    repo: "__test_nsis_release",
   })
   updater.autoDownload = false
 
@@ -283,10 +286,11 @@ test.ifAll("valid signature using DN", async () => {
     repo: "__test_nsis_release",
     publisherName: ["CN=Vladimir Krivosheev, O=Vladimir Krivosheev, L=Grunwald, S=Bayern, C=DE"],
   })
+
   await validateDownload(updater)
 })
 
-test.skip.ifAll("invalid signature", async () => {
+test.ifWindows("invalid signature", async () => {
   const updater = await createNsisUpdater("0.0.1")
   updater.updateConfigPath = await writeUpdateConfig({
     provider: "github",
@@ -294,6 +298,36 @@ test.skip.ifAll("invalid signature", async () => {
     repo: "__test_nsis_release",
     publisherName: ["Foo Bar"],
   })
+  const actualEvents = trackEvents(updater)
+  await assertThat(updater.checkForUpdates().then((it): any => it?.downloadPromise)).throws()
+  expect(actualEvents).toMatchSnapshot()
+})
+
+test.ifWindows("test custom signature verifier", async () => {
+  const updater = await createNsisUpdater("1.0.2")
+  updater.updateConfigPath = await writeUpdateConfig<GithubOptions>({
+    provider: "github",
+    owner: "develar",
+    repo: "__test_nsis_release",
+    publisherName: ["CN=Vladimir Krivosheev, O=Vladimir Krivosheev, L=Grunwald, S=Bayern, C=DE"],
+  })
+  updater.verifyUpdateCodeSignature = (publisherName: string[], path: string) => {
+    return Promise.resolve(null)
+  }
+  await validateDownload(updater)
+})
+
+test.ifWindows("test custom signature verifier - signing error message", async () => {
+  const updater = await createNsisUpdater("1.0.2")
+  updater.updateConfigPath = await writeUpdateConfig<GithubOptions>({
+    provider: "github",
+    owner: "develar",
+    repo: "__test_nsis_release",
+    publisherName: ["CN=Vladimir Krivosheev, O=Vladimir Krivosheev, L=Grunwald, S=Bayern, C=DE"],
+  })
+  updater.verifyUpdateCodeSignature = (publisherName: string[], path: string) => {
+    return Promise.resolve("signature verification failed")
+  }
   const actualEvents = trackEvents(updater)
   await assertThat(updater.checkForUpdates().then((it): any => it?.downloadPromise)).throws()
   expect(actualEvents).toMatchSnapshot()
@@ -364,21 +398,19 @@ test.ifAll("test download and install", async () => {
   })
 
   await validateDownload(updater)
-
-  const actualEvents = trackEvents(updater)
-  expect(actualEvents).toMatchObject([])
-  // await updater.quitAndInstall(true, false)
 })
 
-test.ifAll("test downloaded installer", async () => {
-  const updater = await createNsisUpdater()
-  updater.updateConfigPath = await writeUpdateConfig<GenericServerOptions>({
-    provider: "generic",
-    url: "https://develar.s3.amazonaws.com/test",
+test.skip.ifWindows("test downloaded installer", async () => {
+  const updater = await createNsisUpdater("1.0.1")
+  updater.updateConfigPath = await writeUpdateConfig<GithubOptions>({
+    provider: "github",
+    owner: "mmaietta",
+    repo: "electron-builder-test",
   })
 
   const actualEvents = trackEvents(updater)
-
-  expect(actualEvents).toMatchObject([])
-  // await updater.quitAndInstall(true, false)
+  await validateDownload(updater)
+  // expect(actualEvents).toMatchObject(["checking-for-update", "update-available", "update-downloaded"])
+  updater.quitAndInstall(true, false)
+  expect(actualEvents).toMatchObject(["checking-for-update", "update-available", "update-downloaded", "before-quit-for-update"])
 })

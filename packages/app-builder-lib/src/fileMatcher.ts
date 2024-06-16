@@ -17,9 +17,12 @@ export const excludedNames =
   "__pycache__,.DS_Store,thumbs.db,.gitignore,.gitkeep,.gitattributes,.npmignore," +
   ".idea,.vs,.flowconfig,.jshintrc,.eslintrc,.circleci," +
   ".yarn-integrity,.yarn-metadata.json,yarn-error.log,yarn.lock,package-lock.json,npm-debug.log," +
-  "appveyor.yml,.travis.yml,circle.yml,.nyc_output"
+  "appveyor.yml,.travis.yml,circle.yml,.nyc_output,.husky,.github,electron-builder.env"
 
-export const excludedExts = "iml,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,suo,xproj,cc,d.ts"
+export const excludedExts =
+  "iml,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,suo,xproj,cc,d.ts," +
+  // https://github.com/electron-userland/electron-builder/issues/7512
+  "mk,a,o,forge-meta"
 
 function ensureNoEndSlash(file: string): string {
   if (path.sep !== "/") {
@@ -47,7 +50,12 @@ export class FileMatcher {
 
   readonly isSpecifiedAsEmptyArray: boolean
 
-  constructor(from: string, to: string, readonly macroExpander: (pattern: string) => string, patterns?: Array<string> | string | null | undefined) {
+  constructor(
+    from: string,
+    to: string,
+    readonly macroExpander: (pattern: string) => string,
+    patterns?: Array<string> | string | null | undefined
+  ) {
     this.from = ensureNoEndSlash(macroExpander(from))
     this.to = ensureNoEndSlash(macroExpander(to))
     this.patterns = asArray(patterns).map(it => this.normalizePattern(it))
@@ -181,7 +189,7 @@ export function getMainFileMatchers(
 
   patterns.push(`!**/*.{${excludedExts}${packager.config.includePdb === true ? "" : ",pdb"}}`)
   patterns.push("!**/._*")
-  patterns.push("!**/electron-builder.{yaml,yml,json,json5,toml}")
+  patterns.push("!**/electron-builder.{yaml,yml,json,json5,toml,ts}")
   patterns.push(`!**/{${excludedNames}}`)
 
   if (isElectronCompile) {

@@ -14,7 +14,6 @@ export interface NodeIntegrity {
   blocks: Array<string>
 }
 
-/** @internal */
 export class Node {
   // we don't use Map because later it will be stringified
   files?: { [key: string]: Node }
@@ -35,7 +34,11 @@ export class Node {
 export class AsarFilesystem {
   private offset = 0
 
-  constructor(readonly src: string, readonly header = new Node(), readonly headerSize: number = -1) {
+  constructor(
+    readonly src: string,
+    readonly header = new Node(),
+    readonly headerSize: number = -1
+  ) {
     if (this.header.files == null) {
       this.header.files = {}
     }

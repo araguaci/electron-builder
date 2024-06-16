@@ -1,14 +1,14 @@
 import { checkBuildRequestOptions } from "app-builder-lib"
-import { readAsar } from "app-builder-lib/out/asar/asar"
 import { doMergeConfigs } from "app-builder-lib/out/util/config"
-import { walk } from "builder-util/out/fs"
 import { Arch, createTargets, DIR_TARGET, Platform } from "electron-builder"
-import { promises as fs, readFileSync } from "fs"
+import { promises as fs } from "fs"
 import { outputJson } from "fs-extra"
 import * as path from "path"
 import { createYargs } from "electron-builder/out/builder"
 import { app, appTwo, appTwoThrows, assertPack, linuxDirTarget, modifyPackageJson, packageJson, toSystemIndependentPath } from "./helpers/packTester"
 import { ELECTRON_VERSION } from "./helpers/testConfig"
+import { verifySmartUnpack } from "./helpers/verifySmartUnpack"
+import { AsarFilesystem } from "app-builder-lib/src/asar/asar"
 
 test("cli", async () => {
   // because these methods are internal
@@ -241,12 +241,12 @@ test.ifLinuxOrDevMac("afterPack", () => {
   )
 })
 
-test.ifLinuxOrDevMac("afterSign", () => {
+test.ifWindows("afterSign", () => {
   let called = 0
   return assertPack(
     "test-app-one",
     {
-      targets: createTargets([Platform.LINUX, Platform.MAC], DIR_TARGET),
+      targets: createTargets([Platform.LINUX, Platform.WINDOWS], DIR_TARGET),
       config: {
         afterSign: () => {
           called++
@@ -256,7 +256,8 @@ test.ifLinuxOrDevMac("afterSign", () => {
     },
     {
       packed: async () => {
-        expect(called).toEqual(2)
+        // afterSign is only called when an app is actually signed and ignored otherwise.
+        expect(called).toEqual(1)
       },
     }
   )
@@ -321,42 +322,6 @@ test.ifDevOrLinuxCi("win smart unpack", () => {
   )()
 })
 
-export function removeUnstableProperties(data: any) {
-  return JSON.parse(
-    JSON.stringify(data, (name, value) => {
-      if (name === "offset") {
-        return undefined
-      }
-      if (name.endsWith(".node") && value.size != null) {
-        // size differs on various OS
-        value.size = "<size>"
-      }
-      // Keep existing test coverage
-      if (value.integrity) {
-        delete value.integrity
-      }
-      return value
-    })
-  )
-}
-
-async function verifySmartUnpack(resourceDir: string) {
-  const asarFs = await readAsar(path.join(resourceDir, "app.asar"))
-  expect(await asarFs.readJson(`node_modules${path.sep}debug${path.sep}package.json`)).toMatchObject({
-    name: "debug",
-  })
-  expect(removeUnstableProperties(asarFs.header)).toMatchSnapshot()
-
-  const files = (await walk(resourceDir, file => !path.basename(file).startsWith(".") && !file.endsWith(`resources${path.sep}inspector`))).map(it => {
-    const name = toSystemIndependentPath(it.substring(resourceDir.length + 1))
-    if (it.endsWith("package.json")) {
-      return { name, content: readFileSync(it, "utf-8") }
-    }
-    return name
-  })
-  expect(files).toMatchSnapshot()
-}
-
 // https://github.com/electron-userland/electron-builder/issues/1738
 test.ifDevOrLinuxCi(
   "posix smart unpack",
@@ -368,6 +333,10 @@ test.ifDevOrLinuxCi(
         // tslint:disable-next-line:no-invalid-template-strings
         copyright: "Copyright © 2018 ${author}",
         npmRebuild: true,
+        onNodeModuleFile: filePath => {
+          // Force include this directory in the pakage
+          return filePath.includes("node_modules/three/examples")
+        },
         files: [
           // test ignore pattern for node_modules defined as file set filter
           {
@@ -381,14 +350,16 @@ test.ifDevOrLinuxCi(
         it.dependencies = {
           debug: "4.1.1",
           "edge-cs": "1.2.1",
-          // no prebuilt for electron 3
-          // "lzma-native": "3.0.10",
-          keytar: "5.6.0",
+          "lzma-native": "8.0.6",
+          keytar: "7.9.0",
+          three: "0.160.0",
         }
       }),
-      packed: context => {
+      packed: async context => {
         expect(context.packager.appInfo.copyright).toBe("Copyright © 2018 Foo Bar")
-        return verifySmartUnpack(context.getResources(Platform.LINUX))
+        await verifySmartUnpack(context.getResources(Platform.LINUX), async (asarFs: AsarFilesystem) => {
+          return expect(await asarFs.readFile(`node_modules${path.sep}three${path.sep}examples${path.sep}fonts${path.sep}README.md`)).toMatchSnapshot()
+        })
       },
     }
   )

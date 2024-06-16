@@ -76,6 +76,21 @@ export class LinuxTargetHelper {
     return options.description || this.packager.appInfo.description
   }
 
+  getSanitizedVersion(target: string) {
+    const {
+      appInfo: { version },
+    } = this.packager
+    switch (target) {
+      case "pacman":
+        return version.replace(/-/g, "_")
+      case "rpm":
+      case "deb":
+        return version.replace(/-/g, "~")
+      default:
+        return version
+    }
+  }
+
   async writeDesktopEntry(targetSpecificOptions: LinuxTargetSpecificOptions, exec?: string, destination?: string | null, extra?: { [key: string]: string }): Promise<string> {
     const data = await this.computeDesktopEntry(targetSpecificOptions, exec, extra)
     const file = destination || (await this.packager.getTempFile(`${this.packager.appInfo.productFilename}.desktop`))
@@ -192,4 +207,5 @@ const macToLinuxCategory: any = {
   "public.app-category.utilities": "Utility",
   "public.app-category.social-networking": "Network;Chat",
   "public.app-category.finance": "Office;Finance",
+  "public.app-category.music": "Audio;AudioVideo",
 }

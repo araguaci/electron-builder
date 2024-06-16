@@ -15,7 +15,7 @@ export async function deleteOldElectronVersion(): Promise<any> {
   let files: Array<string>
   try {
     files = await fs.readdir(cacheDir)
-  } catch (e) {
+  } catch (e: any) {
     if (e.code === "ENOENT") {
       return
     } else {
@@ -45,8 +45,8 @@ export function downloadAllRequiredElectronVersions(): Promise<any> {
       platform === "mas" || platform === "darwin"
         ? ["x64"]
         : platform === "win32"
-        ? ["ia32", "x64"]
-        : require(`${path.join(__dirname, "../../..")}/packages/builder-util/out/util`).getArchCliNames()
+          ? ["ia32", "x64"]
+          : require(`${path.join(__dirname, "../../..")}/packages/builder-util/out/util`).getArchCliNames()
     for (const arch of archs) {
       versions.push({
         version: ELECTRON_VERSION,

@@ -2,6 +2,8 @@ The [publish](configuration.md#Configuration-publish) key contains a set of opti
 
 `String | Object | Array<Object | String>` where `Object` it is [Keygen](#keygenoptions), [Generic Server](#genericserveroptions), [GitHub](#githuboptions), [S3](#s3options), [Spaces](#spacesoptions) or [Snap Store](#snapstoreoptions) options. Order is important — first item will be used as a default auto-update server. Can be specified in the [top-level configuration](configuration.md#configuration) or any platform- ([mac](mac.md), [linux](linux.md), [win](win.md)) or target- (e.g. [nsis](nsis.md)) specific configuration.
 
+Note that when using a generic server, you have to upload the built application and metadata files yourself.
+
 Travis and AppVeyor support publishing artifacts. But it requires additional configuration for each CI and you need to configure what to publish.
 `electron-builder` makes publishing dead simple.
 
@@ -9,8 +11,14 @@ If `GH_TOKEN` or `GITHUB_TOKEN` is defined — defaults to `[{provider: "github"
 
 If `KEYGEN_TOKEN` is defined and `GH_TOKEN` or `GITHUB_TOKEN` is not — defaults to `[{provider: "keygen"}]`.
 
+If `GITHUB_RELEASE_TOKEN` is defined, it will be used instead of (`GH_TOKEN` or `GITHUB_TOKEN`) to publish your release.
+- e.g. mac: ``` export GITHUB_RELEASE_TOKEN=<my token> ```
+- the `GITHUB_TOKEN` will still be used when your app checks for updates, etc.
+- you could make your `GITHUB_TOKEN` "Read-only" when creating a fine-grained personal access token, and "Read and write" for the `GITHUB_RELEASE_TOKEN`.
+- "Contents" fine-grained permission was sufficient. (at time of writing - Apr 2024)
+
 !!! info "Snap store"
-    `snap` target by default publishes to snap store (the app store for Linux). To force publishing to another providers, explicitly specify publish configuration for `snap`. 
+    `snap` target by default publishes to snap store (the app store for Linux). To force publishing to another providers, explicitly specify publish configuration for `snap`.
 
 You can publish to multiple providers. For example, to publish Windows artifacts to both GitHub and Bitbucket (order is important — first item will be used as a default auto-update server, so, in this example app will use github as auto-update provider):
 
@@ -27,7 +35,10 @@ You can publish to multiple providers. For example, to publish Windows artifacts
 ```yaml
 win:
   publish:
-    - github
+      # an object provider for github with additional options
+    - provider: github
+      protocol: https
+      # a string provider for bitbucket that will use default options
     - bitbucket
 ```
 
@@ -65,19 +76,19 @@ But please consider using automatic rules instead of explicitly specifying `publ
 * If [npm script](https://docs.npmjs.com/misc/scripts) named `release`, — `always`.
 
  Add to `scripts` in the development `package.json`:
- 
+
  ```json
  "release": "electron-builder"
  ```
 
  and if you run `yarn release`, a release will be drafted (if doesn't already exist) and artifacts published.
- 
+
 ### Recommended GitHub Releases Workflow
 
 1. [Draft a new release](https://help.github.com/articles/creating-releases/). Set the "Tag version" to the value of `version` in your application `package.json`, and prefix it with `v`. "Release title" can be anything you want.
- 
+
     For example, if your application `package.json` version is `1.0`, your draft's "Tag version" would be `v1.0`.
-  
+
 2. Push some commits. Every CI build will update the artifacts attached to this draft.
 3. Once you are done, publish the release. GitHub will tag the latest commit for you.
 
@@ -97,12 +108,12 @@ This example workflow is modelled on how releases are handled in maven (it is an
 Detected automatically using:
 
 * [repository](https://docs.npmjs.com/files/package.json#repository) in the application or development `package.json`,
-* if not set, env 
-    * `TRAVIS_REPO_SLUG` 
-    * or `APPVEYOR_REPO_NAME` 
+* if not set, env
+    * `TRAVIS_REPO_SLUG`
+    * or `APPVEYOR_REPO_NAME`
     * or `CIRCLE_PROJECT_USERNAME`/`CIRCLE_PROJECT_REPONAME`,
 * if no env, from `.git/config` origin url.
- 
+
 ## Publishers
 **Options Available:**
 - GenericServerOptions
@@ -133,7 +144,7 @@ In all publish options <a href="/file-patterns#file-macros">File Macros</a> are 
 <p><code id="GenericServerOptions-requestHeaders">requestHeaders</code> module:http.OutgoingHttpHeaders - Any custom request headers</p>
 </li>
 <li>
-<p><code id="GenericServerOptions-timeout">timeout</code> = <code>60000</code> Number | “undefined” - Request timeout in milliseconds. (Default is 2 minutes; O is ignored)</p>
+<p><code id="GenericServerOptions-timeout">timeout</code> = <code>120000</code> Number | “undefined” - Request timeout in milliseconds. (Default is 2 minutes; O is ignored)</p>
 </li>
 </ul>
 <h2 id="githuboptions">GithubOptions</h2>
@@ -183,11 +194,11 @@ Define <code>GH_TOKEN</code> environment variable.</p>
 <p><code id="GithubOptions-requestHeaders">requestHeaders</code> module:http.OutgoingHttpHeaders - Any custom request headers</p>
 </li>
 <li>
-<p><code id="GithubOptions-timeout">timeout</code> = <code>60000</code> Number | “undefined” - Request timeout in milliseconds. (Default is 2 minutes; O is ignored)</p>
+<p><code id="GithubOptions-timeout">timeout</code> = <code>120000</code> Number | “undefined” - Request timeout in milliseconds. (Default is 2 minutes; O is ignored)</p>
 </li>
 </ul>
 <h2 id="snapstoreoptions">SnapStoreOptions</h2>
-<p><a href="https://snapcraft.io/">Snap Store</a> options.</p>
+<p><a href="https://snapcraft.io/">Snap Store</a> options. To publish directly to Snapcraft, see <a href="https://snapcraft.io/docs/snapcraft-authentication">Snapcraft authentication options</a> for local or CI/CD authentication options.</p>
 <ul>
 <li><strong><code id="SnapStoreOptions-provider">provider</code></strong> “snapStore” - The provider. Must be <code>snapStore</code>.</li>
 <li><code id="SnapStoreOptions-repo">repo</code> String - snapcraft repo name</li>
@@ -203,7 +214,7 @@ Define <code>GH_TOKEN</code> environment variable.</p>
 <p><code id="SnapStoreOptions-requestHeaders">requestHeaders</code> module:http.OutgoingHttpHeaders - Any custom request headers</p>
 </li>
 <li>
-<p><code id="SnapStoreOptions-timeout">timeout</code> = <code>60000</code> Number | “undefined” - Request timeout in milliseconds. (Default is 2 minutes; O is ignored)</p>
+<p><code id="SnapStoreOptions-timeout">timeout</code> = <code>120000</code> Number | “undefined” - Request timeout in milliseconds. (Default is 2 minutes; O is ignored)</p>
 </li>
 </ul>
 <h2 id="spacesoptions">SpacesOptions</h2>
@@ -238,7 +249,7 @@ Define <code>KEYGEN_TOKEN</code> environment variable.</p>
 <p><code id="KeygenOptions-requestHeaders">requestHeaders</code> module:http.OutgoingHttpHeaders - Any custom request headers</p>
 </li>
 <li>
-<p><code id="KeygenOptions-timeout">timeout</code> = <code>60000</code> Number | “undefined” - Request timeout in milliseconds. (Default is 2 minutes; O is ignored)</p>
+<p><code id="KeygenOptions-timeout">timeout</code> = <code>120000</code> Number | “undefined” - Request timeout in milliseconds. (Default is 2 minutes; O is ignored)</p>
 </li>
 </ul>
 <h2 id="bitbucketoptions">BitbucketOptions</h2>
@@ -246,15 +257,15 @@ Define <code>KEYGEN_TOKEN</code> environment variable.</p>
 <a href="https://bitbucket.org/">https://bitbucket.org/</a>
 Define <code>BITBUCKET_TOKEN</code> environment variable.</p>
 <p>For converting an app password to a usable token, you can utilize this</p>
-<pre><code class="hljs language-typescript"><span class="hljs-title function_">convertAppPassword</span>(<span class="hljs-params">owner: <span class="hljs-built_in">string</span>, token: <span class="hljs-built_in">string</span></span>) {
-<span class="hljs-keyword">const</span> base64encodedData = <span class="hljs-title class_">Buffer</span>.<span class="hljs-title function_">from</span>(<span class="hljs-string">`<span class="hljs-subst">${owner}</span>:<span class="hljs-subst">${token.trim()}</span>`</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-string">&quot;base64&quot;</span>)
+<pre><code class="hljs language-typescript"><span class="hljs-title function_">convertAppPassword</span>(<span class="hljs-params">owner: <span class="hljs-built_in">string</span>, appPassword: <span class="hljs-built_in">string</span></span>) {
+<span class="hljs-keyword">const</span> base64encodedData = <span class="hljs-title class_">Buffer</span>.<span class="hljs-title function_">from</span>(<span class="hljs-string">`<span class="hljs-subst">${owner}</span>:<span class="hljs-subst">${appPassword.trim()}</span>`</span>).<span class="hljs-title function_">toString</span>(<span class="hljs-string">&quot;base64&quot;</span>)
 <span class="hljs-keyword">return</span> <span class="hljs-string">`Basic <span class="hljs-subst">${base64encodedData}</span>`</span>
 }
 </code></pre>
 <ul>
 <li><strong><code id="BitbucketOptions-provider">provider</code></strong> “bitbucket” - The provider. Must be <code>bitbucket</code>.</li>
 <li><strong><code id="BitbucketOptions-owner">owner</code></strong> String - Repository owner</li>
-<li><code id="BitbucketOptions-token">token</code> String | “undefined” - The access token to support auto-update from private bitbucket repositories.</li>
+<li><code id="BitbucketOptions-token">token</code> String | “undefined” - The <a href="https://bitbucket.org/account/settings/app-passwords">app password</a> to support auto-update from private bitbucket repositories.</li>
 <li><code id="BitbucketOptions-username">username</code> String | “undefined” - The user name to support auto-update from private bitbucket repositories.</li>
 <li><strong><code id="BitbucketOptions-slug">slug</code></strong> String - Repository slug/name</li>
 <li><code id="BitbucketOptions-channel">channel</code> = <code>latest</code> String | “undefined” - The channel.</li>
@@ -269,7 +280,7 @@ Define <code>BITBUCKET_TOKEN</code> environment variable.</p>
 <p><code id="BitbucketOptions-requestHeaders">requestHeaders</code> module:http.OutgoingHttpHeaders - Any custom request headers</p>
 </li>
 <li>
-<p><code id="BitbucketOptions-timeout">timeout</code> = <code>60000</code> Number | “undefined” - Request timeout in milliseconds. (Default is 2 minutes; O is ignored)</p>
+<p><code id="BitbucketOptions-timeout">timeout</code> = <code>120000</code> Number | “undefined” - Request timeout in milliseconds. (Default is 2 minutes; O is ignored)</p>
 </li>
 </ul>
 <h2 id="s3options">S3Options</h2>
@@ -311,10 +322,32 @@ Or in the <a href="http://docs.aws.amazon.com/sdk-for-javascript/v2/developer-gu
 <p><code id="S3Options-endpoint">endpoint</code> String | “undefined” - The endpoint URI to send requests to. The default endpoint is built from the configured region. The endpoint should be a string like <code>https://{service}.{region}.amazonaws.com</code>.</p>
 </li>
 <li>
+<p><code id="S3Options-accelerate">accelerate</code> Boolean - If set to true, this will enable the s3 accelerated endpoint These endpoints have a particular format of:  ${bucketname}.s3-accelerate.amazonaws.com</p>
+</li>
+<li>
 <p><code id="S3Options-channel">channel</code> = <code>latest</code> String | “undefined” - The update channel.</p>
 </li>
 <li>
 <p><code id="S3Options-path">path</code> = <code>/</code> String | “undefined” - The directory path.</p>
+</li>
+</ul>
+<h2 id="custompublishoptions">CustomPublishOptions</h2>
+<p>undefined</p>
+<ul>
+<li><strong><code id="CustomPublishOptions-provider">provider</code></strong> “custom” - The provider. Must be <code>custom</code>.</li>
+<li><code id="CustomPublishOptions-updateProvider">updateProvider</code> module:builder-util-runtime/out/publishOptions.__type - The Provider to provide UpdateInfo regarding available updates.  Required to use custom providers with electron-updater.</li>
+</ul>
+<p>Inherited from <code>PublishConfiguration</code>:</p>
+<ul>
+<li>
+<p><code id="CustomPublishOptions-publishAutoUpdate">publishAutoUpdate</code> = <code>true</code> Boolean - Whether to publish auto update info files.</p>
+<p>Auto update relies only on the first provider in the list (you can specify several publishers). Thus, probably, there`s no need to upload the metadata files for the other configured providers. But by default will be uploaded.</p>
+</li>
+<li>
+<p><code id="CustomPublishOptions-requestHeaders">requestHeaders</code> module:http.OutgoingHttpHeaders - Any custom request headers</p>
+</li>
+<li>
+<p><code id="CustomPublishOptions-timeout">timeout</code> = <code>120000</code> Number | “undefined” - Request timeout in milliseconds. (Default is 2 minutes; O is ignored)</p>
 </li>
 </ul>
 

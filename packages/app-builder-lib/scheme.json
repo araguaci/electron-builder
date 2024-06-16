@@ -2,6 +2,37 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "additionalProperties": false,
   "definitions": {
+    "AllPublishOptions": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/GithubOptions"
+        },
+        {
+          "$ref": "#/definitions/S3Options"
+        },
+        {
+          "$ref": "#/definitions/SpacesOptions"
+        },
+        {
+          "$ref": "#/definitions/GenericServerOptions"
+        },
+        {
+          "$ref": "#/definitions/CustomPublishOptions"
+        },
+        {
+          "$ref": "#/definitions/KeygenOptions"
+        },
+        {
+          "$ref": "#/definitions/SnapStoreOptions"
+        },
+        {
+          "$ref": "#/definitions/BitbucketOptions"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
     "AppImageOptions": {
       "additionalProperties": false,
       "properties": {
@@ -92,35 +123,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -150,7 +153,7 @@
           "type": "boolean"
         },
         "applicationId": {
-          "description": "The application id. Defaults to `identityName`. Can’t start with numbers.",
+          "description": "The application id. Defaults to `identityName`. This string contains alpha-numeric fields separated by periods. Each field must begin with an ASCII alphabetic character.",
           "type": "string"
         },
         "artifactName": {
@@ -220,6 +223,22 @@
             }
           ]
         },
+        "maxVersionTested": {
+          "default": "arch === Arch.arm64 ? \"10.0.16299.0\" : \"10.0.14316.0\"",
+          "description": "Set the `MaxVersionTested` field in the appx manifest.xml",
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "minVersion": {
+          "default": "arch === Arch.arm64 ? \"10.0.16299.0\" : \"10.0.14316.0\"",
+          "description": "Set the MinVersion field in the appx manifest.xml",
+          "type": [
+            "null",
+            "string"
+          ]
+        },
         "publish": {
           "anyOf": [
             {
@@ -248,35 +267,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -315,6 +306,16 @@
       },
       "type": "object"
     },
+    "ArchType": {
+      "enum": [
+        "arm64",
+        "armv7l",
+        "ia32",
+        "universal",
+        "x64"
+      ],
+      "type": "string"
+    },
     "AsarOptions": {
       "additionalProperties": false,
       "properties": {
@@ -334,7 +335,7 @@
     },
     "BitbucketOptions": {
       "additionalProperties": false,
-      "description": "Bitbucket options.\nhttps://bitbucket.org/\nDefine `BITBUCKET_TOKEN` environment variable.\n\nFor converting an app password to a usable token, you can utilize this\n```typescript\nconvertAppPassword(owner: string, token: string) {\nconst base64encodedData = Buffer.from(`${owner}:${token.trim()}`).toString(\"base64\")\nreturn `Basic ${base64encodedData}`\n}\n```",
+      "description": "Bitbucket options.\nhttps://bitbucket.org/\nDefine `BITBUCKET_TOKEN` environment variable.\n\nFor converting an app password to a usable token, you can utilize this\n```typescript\nconvertAppPassword(owner: string, appPassword: string) {\nconst base64encodedData = Buffer.from(`${owner}:${appPassword.trim()}`).toString(\"base64\")\nreturn `Basic ${base64encodedData}`\n}\n```",
       "properties": {
         "channel": {
           "default": "latest",
@@ -349,10 +350,8 @@
           "type": "string"
         },
         "provider": {
+          "const": "bitbucket",
           "description": "The provider. Must be `bitbucket`.",
-          "enum": [
-            "bitbucket"
-          ],
           "type": "string"
         },
         "publishAutoUpdate": {
@@ -382,7 +381,7 @@
           "type": "string"
         },
         "timeout": {
-          "default": 60000,
+          "default": 120000,
           "description": "Request timeout in milliseconds. (Default is 2 minutes; O is ignored)",
           "type": [
             "null",
@@ -390,7 +389,7 @@
           ]
         },
         "token": {
-          "description": "The access token to support auto-update from private bitbucket repositories.",
+          "description": "The [app password](https://bitbucket.org/account/settings/app-passwords) to support auto-update from private bitbucket repositories.",
           "type": [
             "null",
             "string"
@@ -458,10 +457,8 @@
       "additionalProperties": {},
       "properties": {
         "provider": {
+          "const": "custom",
           "description": "The provider. Must be `custom`.",
-          "enum": [
-            "custom"
-          ],
           "type": "string"
         },
         "publishAutoUpdate": {
@@ -487,7 +484,7 @@
           "description": "Any custom request headers"
         },
         "timeout": {
-          "default": 60000,
+          "default": 120000,
           "description": "Request timeout in milliseconds. (Default is 2 minutes; O is ignored)",
           "type": [
             "null",
@@ -607,7 +604,7 @@
               "type": "null"
             }
           ],
-          "description": "*Advanced only* The [fpm](https://github.com/jordansissel/fpm/wiki#usage) options.\n\nExample: `[\"--before-install=build/deb-preinstall.sh\", \"--after-upgrade=build/deb-postinstall.sh\"]`"
+          "description": "*Advanced only* The [fpm](https://fpm.readthedocs.io/en/latest/cli-reference.html) options.\n\nExample: `[\"--before-install=build/deb-preinstall.sh\", \"--after-upgrade=build/deb-postinstall.sh\"]`"
         },
         "icon": {
           "type": "string"
@@ -681,35 +678,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -720,6 +689,20 @@
               ]
             }
           ]
+        },
+        "recommends": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The [recommended package dependencies](https://www.debian.org/doc/debian-policy/ch-relationships.html#s-binarydeps).."
         },
         "synopsis": {
           "description": "The [short description](https://www.debian.org/doc/debian-policy/ch-controlfields.html#s-f-Description).",
@@ -871,35 +854,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -1250,35 +1205,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -1346,10 +1273,8 @@
           ]
         },
         "provider": {
+          "const": "generic",
           "description": "The provider. Must be `generic`.",
-          "enum": [
-            "generic"
-          ],
           "type": "string"
         },
         "publishAutoUpdate": {
@@ -1375,7 +1300,7 @@
           "description": "Any custom request headers"
         },
         "timeout": {
-          "default": 60000,
+          "default": 120000,
           "description": "Request timeout in milliseconds. (Default is 2 minutes; O is ignored)",
           "type": [
             "null",
@@ -1454,10 +1379,8 @@
           "description": "The protocol. GitHub Publisher supports only `https`."
         },
         "provider": {
+          "const": "github",
           "description": "The provider. Must be `github`.",
-          "enum": [
-            "github"
-          ],
           "type": "string"
         },
         "publishAutoUpdate": {
@@ -1507,7 +1430,7 @@
           "description": "Any custom request headers"
         },
         "timeout": {
-          "default": 60000,
+          "default": 120000,
           "description": "Request timeout in milliseconds. (Default is 2 minutes; O is ignored)",
           "type": [
             "null",
@@ -1577,10 +1500,8 @@
           "type": "string"
         },
         "provider": {
+          "const": "keygen",
           "description": "The provider. Must be `keygen`.",
-          "enum": [
-            "keygen"
-          ],
           "type": "string"
         },
         "publishAutoUpdate": {
@@ -1606,7 +1527,7 @@
           "description": "Any custom request headers"
         },
         "timeout": {
-          "default": 60000,
+          "default": 120000,
           "description": "Request timeout in milliseconds. (Default is 2 minutes; O is ignored)",
           "type": [
             "null",
@@ -1730,6 +1651,20 @@
           "default": true,
           "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.",
           "type": "boolean"
+        },
+        "electronLanguages": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "The electron locales to keep. By default, all Electron locales used as-is."
         },
         "electronUpdaterCompatibility": {
           "description": "The [electron-updater compatibility](/auto-update#compatibility) semver range.",
@@ -1934,35 +1869,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -2120,7 +2027,7 @@
               "type": "null"
             }
           ],
-          "description": "*Advanced only* The [fpm](https://github.com/jordansissel/fpm/wiki#usage) options.\n\nExample: `[\"--before-install=build/deb-preinstall.sh\", \"--after-upgrade=build/deb-postinstall.sh\"]`"
+          "description": "*Advanced only* The [fpm](https://fpm.readthedocs.io/en/latest/cli-reference.html) options.\n\nExample: `[\"--before-install=build/deb-preinstall.sh\", \"--after-upgrade=build/deb-postinstall.sh\"]`"
         },
         "icon": {
           "type": "string"
@@ -2187,35 +2094,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -2246,6 +2125,20 @@
     "MacConfiguration": {
       "additionalProperties": false,
       "properties": {
+        "additionalArguments": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Array of strings specifying additional arguments to pass to the `codesign` command used to sign a specific file.\n\nSome subresources that you may include in your Electron app may need to be signed with --deep, this is not typically safe to apply to the entire Electron app and therefore should be applied to just your file.\nUsage Example: `['--deep']`"
+        },
         "appId": {
           "default": "com.electron.${name}",
           "description": "The application id. Used as [CFBundleIdentifier](https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html#//apple_ref/doc/uid/20001431-102070) for MacOS and as\n[Application User Model ID](https://msdn.microsoft.com/en-us/library/windows/desktop/dd378459(v=vs.85).aspx) for Windows (NSIS target only, Squirrel.Windows not supported). It is strongly recommended that an explicit ID is set.",
@@ -2394,7 +2287,7 @@
               "type": "string"
             }
           ],
-          "description": "The electron locales. By default Electron locales used as is."
+          "description": "The electron locales to keep. By default, all Electron locales used as-is."
         },
         "electronUpdaterCompatibility": {
           "description": "The [electron-updater compatibility](/auto-update#compatibility) semver range.",
@@ -2404,14 +2297,14 @@
           ]
         },
         "entitlements": {
-          "description": "The path to entitlements file for signing the app. `build/entitlements.mac.plist` will be used if exists (it is a recommended way to set).\nMAS entitlements is specified in the [mas](/configuration/mas).",
+          "description": "The path to entitlements file for signing the app. `build/entitlements.mac.plist` will be used if exists (it is a recommended way to set).\nMAS entitlements is specified in the [mas](/configuration/mas).\nSee [this folder in osx-sign's repository](https://github.com/electron/osx-sign/tree/main/entitlements) for examples.\nBe aware that your app may crash if the right entitlements are not set like `com.apple.security.cs.allow-jit` for example on arm64 builds with Electron 20+.\nSee [Signing and Notarizing macOS Builds from the Electron documentation](https://www.electronjs.org/docs/latest/tutorial/code-signing#signing--notarizing-macos-builds) for more information.",
           "type": [
             "null",
             "string"
           ]
         },
         "entitlementsInherit": {
-          "description": "The path to child entitlements which inherit the security settings for signing frameworks and bundles of a distribution. `build/entitlements.mac.inherit.plist` will be used if exists (it is a recommended way to set).\nOtherwise [default](https://github.com/electron-userland/electron-osx-sign/blob/master/default.entitlements.darwin.inherit.plist).\n\nThis option only applies when signing with `entitlements` provided.",
+          "description": "The path to child entitlements which inherit the security settings for signing frameworks and bundles of a distribution. `build/entitlements.mac.inherit.plist` will be used if exists (it is a recommended way to set).\nSee [this folder in osx-sign's repository](https://github.com/electron/osx-sign/tree/main/entitlements) for examples.\n\nThis option only applies when signing with `entitlements` provided.",
           "type": [
             "null",
             "string"
@@ -2549,7 +2442,7 @@
         },
         "gatekeeperAssess": {
           "default": false,
-          "description": "Whether to let electron-osx-sign validate the signing or not.",
+          "description": "Whether to let `@electron/osx-sign` validate the signing or not.",
           "type": "boolean"
         },
         "generateUpdatesFilesForAllChannels": {
@@ -2637,6 +2530,28 @@
             "string"
           ]
         },
+        "notarize": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/NotarizeLegacyOptions"
+            },
+            {
+              "$ref": "#/definitions/NotarizeNotaryOptions"
+            },
+            {
+              "type": [
+                "null",
+                "boolean"
+              ]
+            }
+          ],
+          "description": "Options to use for"
+        },
+        "preAutoEntitlements": {
+          "default": true,
+          "description": "Whether to enable entitlements automation from `@electron/osx-sign`.",
+          "type": "boolean"
+        },
         "protocols": {
           "anyOf": [
             {
@@ -2686,35 +2601,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -2737,6 +2624,20 @@
             "string"
           ]
         },
+        "sign": {
+          "anyOf": [
+            {
+              "typeof": "function"
+            },
+            {
+              "type": [
+                "null",
+                "string"
+              ]
+            }
+          ],
+          "description": "The custom function (or path to file or module id) to sign an app bundle."
+        },
         "signIgnore": {
           "anyOf": [
             {
@@ -2756,25 +2657,15 @@
         },
         "singleArchFiles": {
           "description": "Minimatch pattern of paths that are allowed to be present in one of the\nASAR files, but not in the other.\n\nThis option has no effect unless building for \"universal\" arch and applies\nonly if `mergeASARs` is `true`.",
-          "type": "string"
+          "type": [
+            "null",
+            "string"
+          ]
         },
         "strictVerify": {
-          "anyOf": [
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "type": [
-                "string",
-                "boolean"
-              ]
-            }
-          ],
           "default": true,
-          "description": "Whether to let electron-osx-sign verify the contents or not."
+          "description": "Whether to let `@electron/osx-sign` verify the contents or not.",
+          "type": "boolean"
         },
         "target": {
           "anyOf": [
@@ -2829,7 +2720,7 @@
               "type": "null"
             }
           ],
-          "description": "The target package type: list of `default`, `dmg`, `mas`, `mas-dev`, `pkg`, `7z`, `zip`, `tar.xz`, `tar.lz`, `tar.gz`, `tar.bz2`, `dir`. Defaults to `default` (dmg and zip for Squirrel.Mac)."
+          "description": "The target package type: list of `default`, `dmg`, `mas`, `mas-dev`, `pkg`, `7z`, `zip`, `tar.xz`, `tar.lz`, `tar.gz`, `tar.bz2`, `dir`. Defaults to `default` (`dmg` and `zip` for Squirrel.Mac). Note: Squirrel.Mac auto update mechanism requires both `dmg` and `zip` to be enabled, even when only `dmg` is used. Disabling `zip` will break auto update in `dmg` packages."
         },
         "timestamp": {
           "description": "Specify the URL of the timestamp authority server",
@@ -2856,7 +2747,10 @@
         },
         "x64ArchFiles": {
           "description": "Minimatch pattern of paths that are allowed to be x64 binaries in both\nASAR files\n\nThis option has no effect unless building for \"universal\" arch and applies\nonly if `mergeASARs` is `true`.",
-          "type": "string"
+          "type": [
+            "null",
+            "string"
+          ]
         }
       },
       "type": "object"
@@ -2864,6 +2758,20 @@
     "MasConfiguration": {
       "additionalProperties": false,
       "properties": {
+        "additionalArguments": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Array of strings specifying additional arguments to pass to the `codesign` command used to sign a specific file.\n\nSome subresources that you may include in your Electron app may need to be signed with --deep, this is not typically safe to apply to the entire Electron app and therefore should be applied to just your file.\nUsage Example: `['--deep']`"
+        },
         "appId": {
           "default": "com.electron.${name}",
           "description": "The application id. Used as [CFBundleIdentifier](https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html#//apple_ref/doc/uid/20001431-102070) for MacOS and as\n[Application User Model ID](https://msdn.microsoft.com/en-us/library/windows/desktop/dd378459(v=vs.85).aspx) for Windows (NSIS target only, Squirrel.Windows not supported). It is strongly recommended that an explicit ID is set.",
@@ -3012,7 +2920,7 @@
               "type": "string"
             }
           ],
-          "description": "The electron locales. By default Electron locales used as is."
+          "description": "The electron locales to keep. By default, all Electron locales used as-is."
         },
         "electronUpdaterCompatibility": {
           "description": "The [electron-updater compatibility](/auto-update#compatibility) semver range.",
@@ -3022,14 +2930,14 @@
           ]
         },
         "entitlements": {
-          "description": "The path to entitlements file for signing the app. `build/entitlements.mas.plist` will be used if exists (it is a recommended way to set).\nOtherwise [default](https://github.com/electron-userland/electron-osx-sign/blob/master/default.entitlements.mas.plist).",
+          "description": "The path to entitlements file for signing the app. `build/entitlements.mas.plist` will be used if exists (it is a recommended way to set).\nSee [this folder in osx-sign's repository](https://github.com/electron/osx-sign/tree/main/entitlements) for examples.\nBe aware that your app may crash if the right entitlements are not set like `com.apple.security.cs.allow-jit` for example on arm64 builds with Electron 20+.\nSee [Signing and Notarizing macOS Builds from the Electron documentation](https://www.electronjs.org/docs/latest/tutorial/code-signing#signing--notarizing-macos-builds) for more information.",
           "type": [
             "null",
             "string"
           ]
         },
         "entitlementsInherit": {
-          "description": "The path to child entitlements which inherit the security settings for signing frameworks and bundles of a distribution. `build/entitlements.mas.inherit.plist` will be used if exists (it is a recommended way to set).\nOtherwise [default](https://github.com/electron-userland/electron-osx-sign/blob/master/default.entitlements.mas.inherit.plist).",
+          "description": "The path to child entitlements which inherit the security settings for signing frameworks and bundles of a distribution. `build/entitlements.mas.inherit.plist` will be used if exists (it is a recommended way to set).\nSee [this folder in osx-sign's repository](https://github.com/electron/osx-sign/tree/main/entitlements) for examples.",
           "type": [
             "null",
             "string"
@@ -3167,7 +3075,7 @@
         },
         "gatekeeperAssess": {
           "default": false,
-          "description": "Whether to let electron-osx-sign validate the signing or not.",
+          "description": "Whether to let `@electron/osx-sign` validate the signing or not.",
           "type": "boolean"
         },
         "generateUpdatesFilesForAllChannels": {
@@ -3255,6 +3163,28 @@
             "string"
           ]
         },
+        "notarize": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/NotarizeLegacyOptions"
+            },
+            {
+              "$ref": "#/definitions/NotarizeNotaryOptions"
+            },
+            {
+              "type": [
+                "null",
+                "boolean"
+              ]
+            }
+          ],
+          "description": "Options to use for"
+        },
+        "preAutoEntitlements": {
+          "default": true,
+          "description": "Whether to enable entitlements automation from `@electron/osx-sign`.",
+          "type": "boolean"
+        },
         "protocols": {
           "anyOf": [
             {
@@ -3304,35 +3234,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -3355,6 +3257,20 @@
             "string"
           ]
         },
+        "sign": {
+          "anyOf": [
+            {
+              "typeof": "function"
+            },
+            {
+              "type": [
+                "null",
+                "string"
+              ]
+            }
+          ],
+          "description": "The custom function (or path to file or module id) to sign an app bundle."
+        },
         "signIgnore": {
           "anyOf": [
             {
@@ -3374,25 +3290,15 @@
         },
         "singleArchFiles": {
           "description": "Minimatch pattern of paths that are allowed to be present in one of the\nASAR files, but not in the other.\n\nThis option has no effect unless building for \"universal\" arch and applies\nonly if `mergeASARs` is `true`.",
-          "type": "string"
+          "type": [
+            "null",
+            "string"
+          ]
         },
         "strictVerify": {
-          "anyOf": [
-            {
-              "items": {
-                "type": "string"
-              },
-              "type": "array"
-            },
-            {
-              "type": [
-                "string",
-                "boolean"
-              ]
-            }
-          ],
           "default": true,
-          "description": "Whether to let electron-osx-sign verify the contents or not."
+          "description": "Whether to let `@electron/osx-sign` verify the contents or not.",
+          "type": "boolean"
         },
         "target": {
           "anyOf": [
@@ -3447,7 +3353,7 @@
               "type": "null"
             }
           ],
-          "description": "The target package type: list of `default`, `dmg`, `mas`, `mas-dev`, `pkg`, `7z`, `zip`, `tar.xz`, `tar.lz`, `tar.gz`, `tar.bz2`, `dir`. Defaults to `default` (dmg and zip for Squirrel.Mac)."
+          "description": "The target package type: list of `default`, `dmg`, `mas`, `mas-dev`, `pkg`, `7z`, `zip`, `tar.xz`, `tar.lz`, `tar.gz`, `tar.bz2`, `dir`. Defaults to `default` (`dmg` and `zip` for Squirrel.Mac). Note: Squirrel.Mac auto update mechanism requires both `dmg` and `zip` to be enabled, even when only `dmg` is used. Disabling `zip` will break auto update in `dmg` packages."
         },
         "timestamp": {
           "description": "Specify the URL of the timestamp authority server",
@@ -3474,7 +3380,10 @@
         },
         "x64ArchFiles": {
           "description": "Minimatch pattern of paths that are allowed to be x64 binaries in both\nASAR files\n\nThis option has no effect unless building for \"universal\" arch and applies\nonly if `mergeASARs` is `true`.",
-          "type": "string"
+          "type": [
+            "null",
+            "string"
+          ]
         }
       },
       "type": "object"
@@ -3511,6 +3420,20 @@
     "MsiOptions": {
       "additionalProperties": false,
       "properties": {
+        "additionalLightArgs": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Any additional arguments to be passed to the light.ext, such as `[\"-cultures:ja-jp\"]`"
+        },
         "additionalWixArgs": {
           "anyOf": [
             {
@@ -3592,35 +3515,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -3655,6 +3550,169 @@
           "default": true,
           "description": "If `warningsAsErrors` is `true` (default): treat warnings as errors. If `warningsAsErrors` is `false`: allow warnings.",
           "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "MsiWrappedOptions": {
+      "additionalProperties": false,
+      "properties": {
+        "additionalWixArgs": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Any additional arguments to be passed to the WiX installer compiler, such as `[\"-ext\", \"WixUtilExtension\"]`"
+        },
+        "artifactName": {
+          "description": "The [artifact file name template](/configuration/configuration#artifact-file-name-template).",
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "createDesktopShortcut": {
+          "default": true,
+          "description": "Whether to create desktop shortcut. Set to `always` if to recreate also on reinstall (even if removed by user).",
+          "enum": [
+            "always",
+            false,
+            true
+          ]
+        },
+        "createStartMenuShortcut": {
+          "default": true,
+          "description": "Whether to create start menu shortcut.",
+          "type": "boolean"
+        },
+        "impersonate": {
+          "default": false,
+          "description": "Determines if the wrapped installer should be executed with impersonation",
+          "type": "boolean"
+        },
+        "menuCategory": {
+          "default": false,
+          "description": "Whether to create submenu for start menu shortcut and program files directory. If `true`, company name will be used. Or string value.",
+          "type": [
+            "string",
+            "boolean"
+          ]
+        },
+        "oneClick": {
+          "type": "boolean"
+        },
+        "perMachine": {
+          "default": false,
+          "description": "Whether to install per all users (per-machine).",
+          "type": "boolean"
+        },
+        "publish": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/GithubOptions"
+            },
+            {
+              "$ref": "#/definitions/S3Options"
+            },
+            {
+              "$ref": "#/definitions/SpacesOptions"
+            },
+            {
+              "$ref": "#/definitions/GenericServerOptions"
+            },
+            {
+              "$ref": "#/definitions/CustomPublishOptions"
+            },
+            {
+              "$ref": "#/definitions/KeygenOptions"
+            },
+            {
+              "$ref": "#/definitions/SnapStoreOptions"
+            },
+            {
+              "$ref": "#/definitions/BitbucketOptions"
+            },
+            {
+              "items": {
+                "$ref": "#/definitions/AllPublishOptions"
+              },
+              "type": "array"
+            },
+            {
+              "type": [
+                "null",
+                "string"
+              ]
+            }
+          ]
+        },
+        "runAfterFinish": {
+          "default": true,
+          "description": "Whether to run the installed application after finish. For assisted installer corresponding checkbox will be removed.",
+          "type": "boolean"
+        },
+        "shortcutName": {
+          "description": "The name that will be used for all shortcuts. Defaults to the application name.",
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "upgradeCode": {
+          "description": "The [upgrade code](https://msdn.microsoft.com/en-us/library/windows/desktop/aa372375(v=vs.85).aspx). Optional, by default generated using app id.",
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "warningsAsErrors": {
+          "default": true,
+          "description": "If `warningsAsErrors` is `true` (default): treat warnings as errors. If `warningsAsErrors` is `false`: allow warnings.",
+          "type": "boolean"
+        },
+        "wrappedInstallerArgs": {
+          "description": "Extra arguments to provide to the wrapped installer (ie: /S for silent install)",
+          "type": [
+            "null",
+            "string"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "NotarizeLegacyOptions": {
+      "additionalProperties": false,
+      "properties": {
+        "appBundleId": {
+          "description": "The app bundle identifier your Electron app is using. E.g. com.github.electron. Useful if notarization ID differs from app ID (unlikely).\nOnly used by `legacy` notarization tool",
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "ascProvider": {
+          "description": "Your Team Short Name. Only used by `legacy` notarization tool",
+          "type": [
+            "null",
+            "string"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "NotarizeNotaryOptions": {
+      "additionalProperties": false,
+      "properties": {
+        "teamId": {
+          "description": "The team ID you want to notarize under for when using `notarytool`",
+          "type": "string"
         }
       },
       "type": "object"
@@ -3785,7 +3843,7 @@
           ]
         },
         "license": {
-          "description": "The path to EULA license file. Defaults to `license.txt` or `eula.txt` (or uppercase variants). In addition to `txt, `rtf` and `html` supported (don't forget to use `target=\"_blank\"` for links).\n\nMultiple license files in different languages are supported — use lang postfix (e.g. `_de`, `_ru`)). For example, create files `license_de.txt` and `license_en.txt` in the build resources.\nIf OS language is german, `license_de.txt` will be displayed. See map of [language code to name](https://github.com/meikidd/iso-639-1/blob/master/src/data.js).\n\nAppropriate license file will be selected by user OS language.",
+          "description": "The path to EULA license file. Defaults to `license.txt` or `eula.txt` (or uppercase variants). In addition to `txt`, `rtf` and `html` supported (don't forget to use `target=\"_blank\"` for links).\n\nMultiple license files in different languages are supported — use lang postfix (e.g. `_de`, `_ru`). For example, create files `license_de.txt` and `license_en.txt` in the build resources.\nIf OS language is german, `license_de.txt` will be displayed. See map of [language code to name](https://github.com/meikidd/iso-639-1/blob/master/src/data.js).\n\nAppropriate license file will be selected by user OS language.",
           "type": [
             "null",
             "string"
@@ -3874,35 +3932,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -3913,6 +3943,11 @@
               ]
             }
           ]
+        },
+        "removeDefaultUninstallWelcomePage": {
+          "default": false,
+          "description": "*assisted installer only.* remove the default uninstall welcome page.",
+          "type": "boolean"
         },
         "runAfterFinish": {
           "default": true,
@@ -3925,6 +3960,11 @@
             "null",
             "string"
           ]
+        },
+        "selectPerMachineByDefault": {
+          "default": false,
+          "description": "Whether to set per-machine or per-user installation as default selection on the install mode installer page.",
+          "type": "boolean"
         },
         "shortcutName": {
           "description": "The name that will be used for all shortcuts. Defaults to the application name.",
@@ -4103,7 +4143,7 @@
           ]
         },
         "license": {
-          "description": "The path to EULA license file. Defaults to `license.txt` or `eula.txt` (or uppercase variants). In addition to `txt, `rtf` and `html` supported (don't forget to use `target=\"_blank\"` for links).\n\nMultiple license files in different languages are supported — use lang postfix (e.g. `_de`, `_ru`)). For example, create files `license_de.txt` and `license_en.txt` in the build resources.\nIf OS language is german, `license_de.txt` will be displayed. See map of [language code to name](https://github.com/meikidd/iso-639-1/blob/master/src/data.js).\n\nAppropriate license file will be selected by user OS language.",
+          "description": "The path to EULA license file. Defaults to `license.txt` or `eula.txt` (or uppercase variants). In addition to `txt`, `rtf` and `html` supported (don't forget to use `target=\"_blank\"` for links).\n\nMultiple license files in different languages are supported — use lang postfix (e.g. `_de`, `_ru`). For example, create files `license_de.txt` and `license_en.txt` in the build resources.\nIf OS language is german, `license_de.txt` will be displayed. See map of [language code to name](https://github.com/meikidd/iso-639-1/blob/master/src/data.js).\n\nAppropriate license file will be selected by user OS language.",
           "type": [
             "null",
             "string"
@@ -4192,35 +4232,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -4231,6 +4243,11 @@
               ]
             }
           ]
+        },
+        "removeDefaultUninstallWelcomePage": {
+          "default": false,
+          "description": "*assisted installer only.* remove the default uninstall welcome page.",
+          "type": "boolean"
         },
         "runAfterFinish": {
           "default": true,
@@ -4243,6 +4260,11 @@
             "null",
             "string"
           ]
+        },
+        "selectPerMachineByDefault": {
+          "default": false,
+          "description": "Whether to set per-machine or per-user installation as default selection on the install mode installer page.",
+          "type": "boolean"
         },
         "shortcutName": {
           "description": "The name that will be used for all shortcuts. Defaults to the application name.",
@@ -4303,6 +4325,398 @@
             ]
           }
         ]
+      },
+      "properties": {
+        "accept": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "accept-charset": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "accept-encoding": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "accept-language": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "accept-ranges": {
+          "type": "string"
+        },
+        "access-control-allow-credentials": {
+          "type": "string"
+        },
+        "access-control-allow-headers": {
+          "type": "string"
+        },
+        "access-control-allow-methods": {
+          "type": "string"
+        },
+        "access-control-allow-origin": {
+          "type": "string"
+        },
+        "access-control-expose-headers": {
+          "type": "string"
+        },
+        "access-control-max-age": {
+          "type": "string"
+        },
+        "access-control-request-headers": {
+          "type": "string"
+        },
+        "access-control-request-method": {
+          "type": "string"
+        },
+        "age": {
+          "type": "string"
+        },
+        "allow": {
+          "type": "string"
+        },
+        "authorization": {
+          "type": "string"
+        },
+        "cache-control": {
+          "type": "string"
+        },
+        "cdn-cache-control": {
+          "type": "string"
+        },
+        "connection": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "content-disposition": {
+          "type": "string"
+        },
+        "content-encoding": {
+          "type": "string"
+        },
+        "content-language": {
+          "type": "string"
+        },
+        "content-length": {
+          "type": [
+            "string",
+            "number"
+          ]
+        },
+        "content-location": {
+          "type": "string"
+        },
+        "content-range": {
+          "type": "string"
+        },
+        "content-security-policy": {
+          "type": "string"
+        },
+        "content-security-policy-report-only": {
+          "type": "string"
+        },
+        "cookie": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "date": {
+          "type": "string"
+        },
+        "dav": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "dnt": {
+          "type": "string"
+        },
+        "etag": {
+          "type": "string"
+        },
+        "expect": {
+          "type": "string"
+        },
+        "expires": {
+          "type": "string"
+        },
+        "forwarded": {
+          "type": "string"
+        },
+        "from": {
+          "type": "string"
+        },
+        "host": {
+          "type": "string"
+        },
+        "if-match": {
+          "type": "string"
+        },
+        "if-modified-since": {
+          "type": "string"
+        },
+        "if-none-match": {
+          "type": "string"
+        },
+        "if-range": {
+          "type": "string"
+        },
+        "if-unmodified-since": {
+          "type": "string"
+        },
+        "last-modified": {
+          "type": "string"
+        },
+        "link": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "location": {
+          "type": "string"
+        },
+        "max-forwards": {
+          "type": "string"
+        },
+        "origin": {
+          "type": "string"
+        },
+        "prgama": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "proxy-authenticate": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "proxy-authorization": {
+          "type": "string"
+        },
+        "public-key-pins": {
+          "type": "string"
+        },
+        "public-key-pins-report-only": {
+          "type": "string"
+        },
+        "range": {
+          "type": "string"
+        },
+        "referer": {
+          "type": "string"
+        },
+        "referrer-policy": {
+          "type": "string"
+        },
+        "refresh": {
+          "type": "string"
+        },
+        "retry-after": {
+          "type": "string"
+        },
+        "sec-websocket-accept": {
+          "type": "string"
+        },
+        "sec-websocket-extensions": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "sec-websocket-key": {
+          "type": "string"
+        },
+        "sec-websocket-protocol": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "sec-websocket-version": {
+          "type": "string"
+        },
+        "server": {
+          "type": "string"
+        },
+        "set-cookie": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "strict-transport-security": {
+          "type": "string"
+        },
+        "te": {
+          "type": "string"
+        },
+        "trailer": {
+          "type": "string"
+        },
+        "transfer-encoding": {
+          "type": "string"
+        },
+        "upgrade": {
+          "type": "string"
+        },
+        "upgrade-insecure-requests": {
+          "type": "string"
+        },
+        "user-agent": {
+          "type": "string"
+        },
+        "vary": {
+          "type": "string"
+        },
+        "via": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "warning": {
+          "type": "string"
+        },
+        "www-authenticate": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "x-content-type-options": {
+          "type": "string"
+        },
+        "x-dns-prefetch-control": {
+          "type": "string"
+        },
+        "x-frame-options": {
+          "type": "string"
+        },
+        "x-xss-protection": {
+          "type": "string"
+        }
       },
       "type": "object"
     },
@@ -4450,7 +4864,7 @@
           ]
         },
         "license": {
-          "description": "The path to EULA license file. Defaults to `license.txt` or `eula.txt` (or uppercase variants). In addition to `txt, `rtf` and `html` supported (don't forget to use `target=\"_blank\"` for links).",
+          "description": "The path to EULA license file. Defaults to `license.txt` or `eula.txt` (or uppercase variants). In addition to `txt`, `rtf` and `html` supported (don't forget to use `target=\"_blank\"` for links).",
           "type": [
             "null",
             "string"
@@ -4528,35 +4942,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -4656,35 +5042,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -4797,6 +5155,17 @@
             "null",
             "string"
           ]
+        },
+        "vendor": {
+          "anyOf": [
+            {
+              "typeof": "function"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Vendor specific information."
         }
       },
       "type": "object"
@@ -4805,6 +5174,10 @@
       "additionalProperties": false,
       "description": "[Amazon S3](https://aws.amazon.com/s3/) options.\nAWS credentials are required, please see [getting your credentials](http://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/getting-your-credentials.html).\nDefine `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` [environment variables](http://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-environment.html).\nOr in the [~/.aws/credentials](http://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/loading-node-credentials-shared.html).\n\nExample configuration:\n\n```json\n{\n\"build\":\n \"publish\": {\n   \"provider\": \"s3\",\n   \"bucket\": \"bucket-name\"\n }\n}\n}\n```",
       "properties": {
+        "accelerate": {
+          "description": "If set to true, this will enable the s3 accelerated endpoint\nThese endpoints have a particular format of:\n ${bucketname}.s3-accelerate.amazonaws.com",
+          "type": "boolean"
+        },
         "acl": {
           "anyOf": [
             {
@@ -4864,10 +5237,8 @@
           ]
         },
         "provider": {
+          "const": "s3",
           "description": "The provider. Must be `s3`.",
-          "enum": [
-            "s3"
-          ],
           "type": "string"
         },
         "publishAutoUpdate": {
@@ -4917,7 +5288,7 @@
           "description": "The type of storage to use for the object."
         },
         "timeout": {
-          "default": 60000,
+          "default": 120000,
           "description": "Request timeout in milliseconds. (Default is 2 minutes; O is ignored)",
           "type": [
             "null",
@@ -5016,6 +5387,13 @@
           "default": false,
           "description": "Whether or not the snap should automatically start on login.",
           "type": "boolean"
+        },
+        "base": {
+          "description": "A snap of type base to be used as the execution environment for this snap. Examples: `core`, `core18`, `core20`, `core22`. Defaults to `core20`",
+          "type": [
+            "null",
+            "string"
+          ]
         },
         "buildPackages": {
           "anyOf": [
@@ -5209,35 +5587,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -5317,7 +5667,7 @@
     },
     "SnapStoreOptions": {
       "additionalProperties": false,
-      "description": "[Snap Store](https://snapcraft.io/) options.",
+      "description": "[Snap Store](https://snapcraft.io/) options. To publish directly to Snapcraft, see <a href=\"https://snapcraft.io/docs/snapcraft-authentication\">Snapcraft authentication options</a> for local or CI/CD authentication options.",
       "properties": {
         "channels": {
           "anyOf": [
@@ -5340,10 +5690,8 @@
           "description": "The list of channels the snap would be released."
         },
         "provider": {
+          "const": "snapStore",
           "description": "The provider. Must be `snapStore`.",
-          "enum": [
-            "snapStore"
-          ],
           "type": "string"
         },
         "publishAutoUpdate": {
@@ -5373,7 +5721,7 @@
           "description": "Any custom request headers"
         },
         "timeout": {
-          "default": 60000,
+          "default": 120000,
           "description": "Request timeout in milliseconds. (Default is 2 minutes; O is ignored)",
           "type": [
             "null",
@@ -5433,10 +5781,8 @@
           ]
         },
         "provider": {
+          "const": "spaces",
           "description": "The provider. Must be `spaces`.",
-          "enum": [
-            "spaces"
-          ],
           "type": "string"
         },
         "publishAutoUpdate": {
@@ -5466,7 +5812,7 @@
           "description": "Any custom request headers"
         },
         "timeout": {
-          "default": 60000,
+          "default": 120000,
           "description": "Request timeout in milliseconds. (Default is 2 minutes; O is ignored)",
           "type": [
             "null",
@@ -5547,35 +5893,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -5616,14 +5934,7 @@
           "anyOf": [
             {
               "items": {
-                "enum": [
-                  "arm64",
-                  "armv7l",
-                  "ia32",
-                  "universal",
-                  "x64"
-                ],
-                "type": "string"
+                "$ref": "#/definitions/ArchType"
               },
               "type": "array"
             },
@@ -5771,6 +6082,20 @@
           "default": true,
           "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.",
           "type": "boolean"
+        },
+        "electronLanguages": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "string"
+            }
+          ],
+          "description": "The electron locales to keep. By default, all Electron locales used as-is."
         },
         "electronUpdaterCompatibility": {
           "description": "The [electron-updater compatibility](/auto-update#compatibility) semver range.",
@@ -5944,35 +6269,7 @@
             },
             {
               "items": {
-                "anyOf": [
-                  {
-                    "$ref": "#/definitions/GithubOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/S3Options"
-                  },
-                  {
-                    "$ref": "#/definitions/SpacesOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/GenericServerOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/CustomPublishOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/KeygenOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/SnapStoreOptions"
-                  },
-                  {
-                    "$ref": "#/definitions/BitbucketOptions"
-                  },
-                  {
-                    "type": "string"
-                  }
-                ]
+                "$ref": "#/definitions/AllPublishOptions"
               },
               "type": "array"
             },
@@ -6054,6 +6351,21 @@
           "description": "Whether to sign DLL files. Advanced option.",
           "type": "boolean"
         },
+        "signExts": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Explicit file extensions to also sign. Advanced option."
+        },
         "signingHashAlgorithms": {
           "anyOf": [
             {
@@ -6099,7 +6411,7 @@
             }
           ],
           "default": "nsis",
-          "description": "The target package type: list of `nsis`, `nsis-web` (Web installer), `portable` ([portable](/configuration/nsis#portable) app without installation), `appx`, `msi`, `squirrel`, `7z`, `zip`, `tar.xz`, `tar.lz`, `tar.gz`, `tar.bz2`, `dir`.\nAppX package can be built only on Windows 10.\n\nTo use Squirrel.Windows please install `electron-builder-squirrel-windows` dependency."
+          "description": "The target package type: list of `nsis`, `nsis-web` (Web installer), `portable` ([portable](/configuration/nsis#portable) app without installation), `appx`, `msi`, `msi-wrapped`, `squirrel`, `7z`, `zip`, `tar.xz`, `tar.lz`, `tar.gz`, `tar.bz2`, `dir`.\nAppX package can be built only on Windows 10.\n\nTo use Squirrel.Windows please install `electron-builder-squirrel-windows` dependency."
         },
         "timeStampServer": {
           "default": "http://timestamp.digicert.com",
@@ -6133,6 +6445,20 @@
         }
       ],
       "description": "The function (or path to file or module id) to be [run after all artifacts are build](#afterAllArtifactBuild)."
+    },
+    "afterExtract": {
+      "anyOf": [
+        {
+          "typeof": "function"
+        },
+        {
+          "type": [
+            "null",
+            "string"
+          ]
+        }
+      ],
+      "description": "The function (or path to file or module id) to be [run after the prebuilt Electron binary has been extracted to the output directory](#afterextract)"
     },
     "afterPack": {
       "anyOf": [
@@ -6315,8 +6641,15 @@
       "description": "Whether to build the application native dependencies from source.",
       "type": "boolean"
     },
+    "buildNumber": {
+      "description": "The build number. Maps to the `--iteration` flag for builds using FPM on Linux.\nIf not defined, then it will fallback to `BUILD_NUMBER` or `TRAVIS_BUILD_NUMBER` or `APPVEYOR_BUILD_NUMBER` or `CIRCLE_BUILD_NUM` or `BUILD_BUILDNUMBER` or `CI_PIPELINE_IID` env.",
+      "type": [
+        "null",
+        "string"
+      ]
+    },
     "buildVersion": {
-      "description": "The build version. Maps to the `CFBundleVersion` on macOS, and `FileVersion` metadata property on Windows. Defaults to the `version`.\nIf `TRAVIS_BUILD_NUMBER` or `APPVEYOR_BUILD_NUMBER` or `CIRCLE_BUILD_NUM` or `BUILD_NUMBER` or `bamboo.buildNumber` or `CI_PIPELINE_IID` env defined, it will be used as a build version (`version.build_number`).",
+      "description": "The build version. Maps to the `CFBundleVersion` on macOS, and `FileVersion` metadata property on Windows. Defaults to the `version`.\nIf `buildVersion` is not defined and `buildNumber` (or one of the `buildNumber` envs) is defined, it will be used as a build version (`version.buildNumber`).",
       "type": [
         "null",
         "string"
@@ -6388,6 +6721,11 @@
         }
       ]
     },
+    "disableSanityCheckAsar": {
+      "default": false,
+      "description": "Whether to disable sanity check asar package (useful for custom electron forks that implement their own encrypted integrity validation)",
+      "type": "boolean"
+    },
     "dmg": {
       "anyOf": [
         {
@@ -6398,6 +6736,10 @@
         }
       ],
       "description": "macOS DMG options."
+    },
+    "downloadAlternateFFmpeg": {
+      "description": "Whether to download the alternate FFmpeg library from Electron's release assets and replace the default FFmpeg library prior to signing",
+      "type": "boolean"
     },
     "electronBranding": {
       "$ref": "#/definitions/ElectronBrandingOptions",
@@ -6421,6 +6763,20 @@
     "electronDownload": {
       "$ref": "#/definitions/ElectronDownloadOptions",
       "description": "The [electron-download](https://github.com/electron-userland/electron-download#usage) options."
+    },
+    "electronLanguages": {
+      "anyOf": [
+        {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "description": "The electron locales to keep. By default, all Electron locales used as-is."
     },
     "electronUpdaterCompatibility": {
       "description": "The [electron-updater compatibility](/auto-update#compatibility) semver range.",
@@ -6685,6 +7041,33 @@
       ],
       "description": "MSI project created on disk - not packed into .msi package yet."
     },
+    "msiWrapped": {
+      "anyOf": [
+        {
+          "$ref": "#/definitions/MsiWrappedOptions"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "nativeRebuilder": {
+      "anyOf": [
+        {
+          "enum": [
+            "legacy",
+            "parallel",
+            "sequential"
+          ],
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": "sequential",
+      "description": "Use `legacy` app-builder binary for installing native dependencies, or `@electron/rebuild` in `sequential` or `parallel` compilation modes."
+    },
     "nodeGypRebuild": {
       "default": false,
       "description": "Whether to execute `node-gyp rebuild` before starting to package the app.\n\nDon't [use](https://github.com/electron-userland/electron-builder/issues/683#issuecomment-241214075) [npm](http://electron.atom.io/docs/tutorial/using-native-node-modules/#using-npm) (neither `.npmrc`) for configuring electron headers. Use `electron-builder node-gyp-rebuild` instead.",
@@ -6751,7 +7134,7 @@
           ]
         }
       ],
-      "description": "The function (or path to file or module id) to be [run on each node module](#onnodemodulefile) file."
+      "description": "The function (or path to file or module id) to be [run on each node module](#onnodemodulefile) file. Returning `true`/`false` will determine whether to force include or to use the default copier logic"
     },
     "p5p": {
       "anyOf": [
@@ -6843,35 +7226,7 @@
         },
         {
           "items": {
-            "anyOf": [
-              {
-                "$ref": "#/definitions/GithubOptions"
-              },
-              {
-                "$ref": "#/definitions/S3Options"
-              },
-              {
-                "$ref": "#/definitions/SpacesOptions"
-              },
-              {
-                "$ref": "#/definitions/GenericServerOptions"
-              },
-              {
-                "$ref": "#/definitions/CustomPublishOptions"
-              },
-              {
-                "$ref": "#/definitions/KeygenOptions"
-              },
-              {
-                "$ref": "#/definitions/SnapStoreOptions"
-              },
-              {
-                "$ref": "#/definitions/BitbucketOptions"
-              },
-              {
-                "type": "string"
-              }
-            ]
+            "$ref": "#/definitions/AllPublishOptions"
           },
           "type": "array"
         },
@@ -6886,11 +7241,6 @@
     "releaseInfo": {
       "$ref": "#/definitions/ReleaseInfo",
       "description": "The release info. Intended for command line usage:\n\n```\n-c.releaseInfo.releaseNotes=\"new features\"\n```"
-    },
-    "remoteBuild": {
-      "default": true,
-      "description": "Whether to build using Electron Build Service if target not supported on current OS.",
-      "type": "boolean"
     },
     "removePackageKeywords": {
       "default": true,

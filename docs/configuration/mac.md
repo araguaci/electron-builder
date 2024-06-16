@@ -1,6 +1,8 @@
 The top-level [mac](configuration.md#Configuration-mac) key contains set of options instructing electron-builder on how it should build macOS targets. These options applicable for any macOS target.
 
 <!-- do not edit. start of generated block -->
+<h2 id="macconfiguration">MacConfiguration</h2>
+<p>undefined</p>
 <ul>
 <li>
 <p><code id="MacConfiguration-category">category</code> String | “undefined” - The application category type, as shown in the Finder via <em>View -&gt; Arrange by Application Category</em> when viewing the Applications directory.</p>
@@ -8,7 +10,7 @@ The top-level [mac](configuration.md#Configuration-mac) key contains set of opti
 <p>Valid values are listed in <a href="https://developer.apple.com/library/ios/documentation/General/Reference/InfoPlistKeyReference/Articles/LaunchServicesKeys.html#//apple_ref/doc/uid/TP40009250-SW8">Apple’s documentation</a>.</p>
 </li>
 <li>
-<p><code id="MacConfiguration-target">target</code> String | <a href="/cli#targetconfiguration">TargetConfiguration</a> - The target package type: list of <code>default</code>, <code>dmg</code>, <code>mas</code>, <code>mas-dev</code>, <code>pkg</code>, <code>7z</code>, <code>zip</code>, <code>tar.xz</code>, <code>tar.lz</code>, <code>tar.gz</code>, <code>tar.bz2</code>, <code>dir</code>. Defaults to <code>default</code> (dmg and zip for Squirrel.Mac).</p>
+<p><code id="MacConfiguration-target">target</code> String | <a href="/cli#targetconfiguration">TargetConfiguration</a> - The target package type: list of <code>default</code>, <code>dmg</code>, <code>mas</code>, <code>mas-dev</code>, <code>pkg</code>, <code>7z</code>, <code>zip</code>, <code>tar.xz</code>, <code>tar.lz</code>, <code>tar.gz</code>, <code>tar.bz2</code>, <code>dir</code>. Defaults to <code>default</code> (<code>dmg</code> and <code>zip</code> for Squirrel.Mac). Note: Squirrel.Mac auto update mechanism requires both <code>dmg</code> and <code>zip</code> to be enabled, even when only <code>dmg</code> is used. Disabling <code>zip</code> will break auto update in <code>dmg</code> packages.</p>
 </li>
 <li>
 <p><code id="MacConfiguration-identity">identity</code> String | “undefined” - The name of certificate to use when signing. Consider using environment variables <a href="/code-signing">CSC_LINK or CSC_NAME</a> instead of specifying this option. MAS installer identity is specified in the <a href="/configuration/mas">mas</a>.</p>
@@ -17,10 +19,10 @@ The top-level [mac](configuration.md#Configuration-mac) key contains set of opti
 <p><code id="MacConfiguration-icon">icon</code> = <code>build/icon.icns</code> String | “undefined” - The path to application icon.</p>
 </li>
 <li>
-<p><code id="MacConfiguration-entitlements">entitlements</code> String | “undefined” - The path to entitlements file for signing the app. <code>build/entitlements.mac.plist</code> will be used if exists (it is a recommended way to set). MAS entitlements is specified in the <a href="/configuration/mas">mas</a>.</p>
+<p><code id="MacConfiguration-entitlements">entitlements</code> String | “undefined” - The path to entitlements file for signing the app. <code>build/entitlements.mac.plist</code> will be used if exists (it is a recommended way to set). MAS entitlements is specified in the <a href="/configuration/mas">mas</a>. See <a href="https://github.com/electron/osx-sign/tree/main/entitlements">this folder in osx-sign’s repository</a> for examples. Be aware that your app may crash if the right entitlements are not set like <code>com.apple.security.cs.allow-jit</code> for example on arm64 builds with Electron 20+. See <a href="https://www.electronjs.org/docs/latest/tutorial/code-signing#signing--notarizing-macos-builds">Signing and Notarizing macOS Builds from the Electron documentation</a> for more information.</p>
 </li>
 <li>
-<p><code id="MacConfiguration-entitlementsInherit">entitlementsInherit</code> String | “undefined” - The path to child entitlements which inherit the security settings for signing frameworks and bundles of a distribution. <code>build/entitlements.mac.inherit.plist</code> will be used if exists (it is a recommended way to set). Otherwise <a href="https://github.com/electron-userland/electron-osx-sign/blob/master/default.entitlements.darwin.inherit.plist">default</a>.</p>
+<p><code id="MacConfiguration-entitlementsInherit">entitlementsInherit</code> String | “undefined” - The path to child entitlements which inherit the security settings for signing frameworks and bundles of a distribution. <code>build/entitlements.mac.inherit.plist</code> will be used if exists (it is a recommended way to set). See <a href="https://github.com/electron/osx-sign/tree/main/entitlements">this folder in osx-sign’s repository</a> for examples.</p>
 <p>This option only applies when signing with <code>entitlements</code> provided.</p>
 </li>
 <li>
@@ -72,22 +74,25 @@ The top-level [mac](configuration.md#Configuration-mac) key contains set of opti
 <p><code id="MacConfiguration-requirements">requirements</code> String | “undefined” - Path of <a href="https://developer.apple.com/library/mac/documentation/Security/Conceptual/CodeSigningGuide/RequirementLang/RequirementLang.html">requirements file</a> used in signing. Not applicable for MAS.</p>
 </li>
 <li>
-<p><code id="MacConfiguration-electronLanguages">electronLanguages</code> Array&lt;String&gt; | String - The electron locales. By default Electron locales used as is.</p>
-</li>
-<li>
 <p><code id="MacConfiguration-extraDistFiles">extraDistFiles</code> Array&lt;String&gt; | String | “undefined” - Extra files to put in archive. Not applicable for <code>tar.*</code>.</p>
 </li>
 <li>
 <p><code id="MacConfiguration-hardenedRuntime">hardenedRuntime</code> = <code>true</code> Boolean - Whether your app has to be signed with hardened runtime.</p>
 </li>
 <li>
-<p><code id="MacConfiguration-gatekeeperAssess">gatekeeperAssess</code> = <code>false</code> Boolean - Whether to let electron-osx-sign validate the signing or not.</p>
+<p><code id="MacConfiguration-gatekeeperAssess">gatekeeperAssess</code> = <code>false</code> Boolean - Whether to let <code>@electron/osx-sign</code> validate the signing or not.</p>
 </li>
 <li>
-<p><code id="MacConfiguration-strictVerify">strictVerify</code> = <code>true</code> Array&lt;String&gt; | String | Boolean - Whether to let electron-osx-sign verify the contents or not.</p>
+<p><code id="MacConfiguration-strictVerify">strictVerify</code> = <code>true</code> Boolean - Whether to let <code>@electron/osx-sign</code> verify the contents or not.</p>
+</li>
+<li>
+<p><code id="MacConfiguration-preAutoEntitlements">preAutoEntitlements</code> = <code>true</code> Boolean - Whether to enable entitlements automation from <code>@electron/osx-sign</code>.</p>
 </li>
 <li>
 <p><code id="MacConfiguration-signIgnore">signIgnore</code> Array&lt;String&gt; | String | “undefined” - Regex or an array of regex’s that signal skipping signing a file.</p>
+</li>
+<li>
+<p><code id="MacConfiguration-sign">sign</code> module:app-builder-lib/out/macPackager.__type | String | “undefined” - The custom function (or path to file or module id) to sign an app bundle.</p>
 </li>
 <li>
 <p><code id="MacConfiguration-timestamp">timestamp</code> String | “undefined” - Specify the URL of the timestamp authority server</p>
@@ -97,13 +102,33 @@ The top-level [mac](configuration.md#Configuration-mac) key contains set of opti
 <p>This option has no effect unless building for “universal” arch.</p>
 </li>
 <li>
-<p><code id="MacConfiguration-singleArchFiles">singleArchFiles</code> String - Minimatch pattern of paths that are allowed to be present in one of the ASAR files, but not in the other.</p>
+<p><code id="MacConfiguration-singleArchFiles">singleArchFiles</code> String | “undefined” - Minimatch pattern of paths that are allowed to be present in one of the ASAR files, but not in the other.</p>
 <p>This option has no effect unless building for “universal” arch and applies only if <code>mergeASARs</code> is <code>true</code>.</p>
 </li>
 <li>
-<p><code id="MacConfiguration-x64ArchFiles">x64ArchFiles</code> String - Minimatch pattern of paths that are allowed to be x64 binaries in both ASAR files</p>
+<p><code id="MacConfiguration-x64ArchFiles">x64ArchFiles</code> String | “undefined” - Minimatch pattern of paths that are allowed to be x64 binaries in both ASAR files</p>
 <p>This option has no effect unless building for “universal” arch and applies only if <code>mergeASARs</code> is <code>true</code>.</p>
 </li>
+<li>
+<p><code id="MacConfiguration-additionalArguments">additionalArguments</code> Array&lt;String&gt; | “undefined” - Array of strings specifying additional arguments to pass to the <code>codesign</code> command used to sign a specific file.</p>
+<p>Some subresources that you may include in your Electron app may need to be signed with --deep, this is not typically safe to apply to the entire Electron app and therefore should be applied to just your file. Usage Example: <code>['--deep']</code></p>
+</li>
+<li>
+<p><code id="MacConfiguration-notarize">notarize</code> <a href="#NotarizeLegacyOptions">NotarizeLegacyOptions</a> | <a href="#NotarizeNotaryOptions">NotarizeNotaryOptions</a> | Boolean | “undefined” - Options to use for @electron/notarize (ref: <a href="https://github.com/electron/notarize">https://github.com/electron/notarize</a>). Use <code>false</code> to explicitly disable</p>
+<p>Note: In order to activate the notarization step You MUST specify one of the following via environment variables: 1. <code>APPLE_API_KEY</code>, <code>APPLE_API_KEY_ID</code> and <code>APPLE_API_ISSUER</code>. 2. <code>APPLE_ID</code>, <code>APPLE_APP_SPECIFIC_PASSWORD</code>, and <code>APPLE_TEAM_ID</code> 3. <code>APPLE_KEYCHAIN</code> and <code>APPLE_KEYCHAIN_PROFILE</code></p>
+<p>For security reasons it is recommended to use the first option (see <a href="https://github.com/electron-userland/electron-builder/issues/7859">https://github.com/electron-userland/electron-builder/issues/7859</a>)</p>
+</li>
+</ul>
+<h2 id="notarizelegacyoptions">NotarizeLegacyOptions</h2>
+<p>undefined</p>
+<ul>
+<li><code id="NotarizeLegacyOptions-appBundleId">appBundleId</code> String | “undefined” - The app bundle identifier your Electron app is using. E.g. com.github.electron. Useful if notarization ID differs from app ID (unlikely). Only used by <code>legacy</code> notarization tool</li>
+<li><code id="NotarizeLegacyOptions-ascProvider">ascProvider</code> String | “undefined” - Your Team Short Name. Only used by <code>legacy</code> notarization tool</li>
+</ul>
+<h2 id="notarizenotaryoptions">NotarizeNotaryOptions</h2>
+<p>undefined</p>
+<ul>
+<li tag.description=""><code id="NotarizeNotaryOptions-teamId">teamId</code> String - The team ID you want to notarize under for when using <code>notarytool</code> Deprecated:</li>
 </ul>
 
 <!-- end of generated block -->

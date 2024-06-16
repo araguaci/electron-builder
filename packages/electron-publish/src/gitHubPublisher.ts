@@ -37,12 +37,17 @@ export class GitHubPublisher extends HttpPublisher {
 
   private releaseLogFields: Fields | null = null
 
-  constructor(context: PublishContext, private readonly info: GithubOptions, private readonly version: string, private readonly options: PublishOptions = {}) {
+  constructor(
+    context: PublishContext,
+    private readonly info: GithubOptions,
+    private readonly version: string,
+    private readonly options: PublishOptions = {}
+  ) {
     super(context, true)
 
     let token = info.token
-    if (isEmptyOrSpaces(token)) {
-      token = process.env.GH_TOKEN || process.env.GITHUB_TOKEN
+    if (isEmptyOrSpaces(token) || process.env.GITHUB_RELEASE_TOKEN) {
+      token = process.env.GITHUB_RELEASE_TOKEN ? process.env.GITHUB_RELEASE_TOKEN : process.env.GH_TOKEN || process.env.GITHUB_TOKEN
       if (isEmptyOrSpaces(token)) {
         throw new InvalidConfigurationError(`GitHub Personal Access Token is not set, neither programmatically, nor using env "GH_TOKEN"`)
       }
@@ -198,7 +203,7 @@ export class GitHubPublisher extends HttpPublisher {
         this.context.cancellationToken,
         requestProcessor
       )
-      .catch(e => {
+      .catch((e: any) => {
         if (attemptNumber > 3) {
           return Promise.reject(e)
         } else if (this.doesErrorMeanAlreadyExists(e)) {
@@ -249,7 +254,7 @@ export class GitHubPublisher extends HttpPublisher {
     for (let i = 0; i < 3; i++) {
       try {
         return await this.githubRequest(`/repos/${this.info.owner}/${this.info.repo}/releases/${release.id}`, this.token, null, "DELETE")
-      } catch (e) {
+      } catch (e: any) {
         if (e instanceof HttpError) {
           if (e.statusCode === 404) {
             log.warn({ releaseId: release.id, reason: "doesn't exist" }, "cannot delete release")

@@ -22,7 +22,11 @@ export class BuildCacheManager {
 
   private newDigest: string | null = null
 
-  constructor(outDir: string, private readonly executableFile: string, arch: Arch) {
+  constructor(
+    outDir: string,
+    private readonly executableFile: string,
+    arch: Arch
+  ) {
     this.cacheDir = path.join(outDir, ".cache", Arch[arch])
     this.cacheFile = path.join(this.cacheDir, "app.exe")
     this.cacheInfoFile = path.join(this.cacheDir, "info.json")
@@ -42,7 +46,7 @@ export class BuildCacheManager {
     try {
       await copyFile(this.cacheFile, this.executableFile, false)
       return true
-    } catch (e) {
+    } catch (e: any) {
       if (e.code === "ENOENT" || e.code === "ENOTDIR") {
         log.debug({ error: e.code }, "copy cached executable failed")
       } else {
@@ -66,7 +70,7 @@ export class BuildCacheManager {
     try {
       await mkdir(this.cacheDir, { recursive: true })
       await Promise.all([writeJson(this.cacheInfoFile, this.cacheInfo), copyFile(this.executableFile, this.cacheFile, false)])
-    } catch (e) {
+    } catch (e: any) {
       log.warn({ error: e.stack || e }, `cannot save build cache`)
     }
   }

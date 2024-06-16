@@ -1,4 +1,4 @@
-# electron-builder [![npm version](https://img.shields.io/npm/v/electron-builder.svg?label=latest)](https://yarn.pm/electron-builder) [![downloads per month](https://img.shields.io/npm/dm/electron-builder.svg)](https://yarn.pm/electron-builder) [![donate](https://img.shields.io/badge/donate-donorbox-green.svg)](https://www.electron.build/donate) [![project chat](https://img.shields.io/badge/chat-on_zulip-brightgreen.svg)](https://electron-builder.zulipchat.com)
+# electron-builder [![npm version](https://img.shields.io/npm/v/electron-builder.svg?label=latest)](https://yarn.pm/electron-builder) [![downloads per month](https://img.shields.io/npm/dm/electron-builder.svg)](https://yarn.pm/electron-builder) [![donate](https://img.shields.io/badge/donate-donorbox-green.svg)](https://www.electron.build/donate)
 A complete solution to package and build a ready for distribution Electron app for macOS, Windows and Linux with “auto update” support out of the box.
 
 * NPM packages management:
@@ -25,7 +25,7 @@ A complete solution to package and build a ready for distribution Electron app f
 | Question | Answer |
 |--------|-------|
 | “I want to configure electron-builder” | [See options](configuration/configuration.md) |
-| “I have a question” | [Open an issue](https://github.com/electron-userland/electron-builder/issues) or [join the chat](https://electron-builder.zulipchat.com/) |
+| “I have a question” | [Open an issue](https://github.com/electron-userland/electron-builder/issues) |
 | “I found a bug” | [Open an issue](https://github.com/electron-userland/electron-builder/issues/new) |
 | “I want to support development” | [Donate](donate.md) |
 
@@ -47,6 +47,15 @@ public-hoist-pattern=*
 shamefully-hoist=true
 ```
 
+Note: Setting shamefully-hoist to true is the same as setting public-hoist-pattern to *.
+
+### Note for Yarn 3
+
+Yarn 3 use PnP by default, but electron-builder still need node-modules(ref: [yarnpkg/berry#4804](https://github.com/yarnpkg/berry/issues/4804#issuecomment-1234407305)). Add configuration in the `.yarnrc.yaml` as follows:
+```
+nodeLinker: "node-modules"
+```
+will declare to use node-modules instead of PnP.
 
 ## Boilerplates
 
@@ -56,6 +65,7 @@ shamefully-hoist=true
 * [electron-boilerplate](https://github.com/szwacz/electron-boilerplate) A minimalistic yet comprehensive boilerplate application.
 * [Vue CLI 3 plugin for Electron](https://nklayman.github.io/vue-cli-plugin-electron-builder) A Vue CLI 3 plugin for Electron with no required configuration.
 * [electron-vue-vite](https://github.com/caoxiemeihao/electron-vue-vite) A real simple Electron + Vue3 + Vite2 boilerplate.
+* [vite-electron-builder](https://github.com/cawa-93/vite-electron-builder) Secure boilerplate for Electron app based on Vite. TypeScript + Vue/React/Angular/Svelte/Vanilla
 
 ## Quick Setup Guide
 
