@@ -1652,6 +1652,14 @@
           "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.",
           "type": "boolean"
         },
+        "disableDefaultIgnoredFiles": {
+          "default": false,
+          "description": "Whether to exclude all default ignored files(https://www.electron.build/configuration/contents#files) and options. Defaults to `false`.",
+          "type": [
+            "null",
+            "boolean"
+          ]
+        },
         "electronLanguages": {
           "anyOf": [
             {
@@ -2275,6 +2283,14 @@
           "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.",
           "type": "boolean"
         },
+        "disableDefaultIgnoredFiles": {
+          "default": false,
+          "description": "Whether to exclude all default ignored files(https://www.electron.build/configuration/contents#files) and options. Defaults to `false`.",
+          "type": [
+            "null",
+            "boolean"
+          ]
+        },
         "electronLanguages": {
           "anyOf": [
             {
@@ -2532,9 +2548,6 @@
         },
         "notarize": {
           "anyOf": [
-            {
-              "$ref": "#/definitions/NotarizeLegacyOptions"
-            },
             {
               "$ref": "#/definitions/NotarizeNotaryOptions"
             },
@@ -2908,6 +2921,14 @@
           "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.",
           "type": "boolean"
         },
+        "disableDefaultIgnoredFiles": {
+          "default": false,
+          "description": "Whether to exclude all default ignored files(https://www.electron.build/configuration/contents#files) and options. Defaults to `false`.",
+          "type": [
+            "null",
+            "boolean"
+          ]
+        },
         "electronLanguages": {
           "anyOf": [
             {
@@ -3165,9 +3186,6 @@
         },
         "notarize": {
           "anyOf": [
-            {
-              "$ref": "#/definitions/NotarizeLegacyOptions"
-            },
             {
               "$ref": "#/definitions/NotarizeNotaryOptions"
             },
@@ -3679,26 +3697,6 @@
         },
         "wrappedInstallerArgs": {
           "description": "Extra arguments to provide to the wrapped installer (ie: /S for silent install)",
-          "type": [
-            "null",
-            "string"
-          ]
-        }
-      },
-      "type": "object"
-    },
-    "NotarizeLegacyOptions": {
-      "additionalProperties": false,
-      "properties": {
-        "appBundleId": {
-          "description": "The app bundle identifier your Electron app is using. E.g. com.github.electron. Useful if notarization ID differs from app ID (unlikely).\nOnly used by `legacy` notarization tool",
-          "type": [
-            "null",
-            "string"
-          ]
-        },
-        "ascProvider": {
-          "description": "Your Team Short Name. Only used by `legacy` notarization tool",
           "type": [
             "null",
             "string"
@@ -6083,6 +6081,14 @@
           "description": "Whether to infer update channel from application version pre-release components. e.g. if version `0.12.1-alpha.1`, channel will be set to `alpha`. Otherwise to `latest`.",
           "type": "boolean"
         },
+        "disableDefaultIgnoredFiles": {
+          "default": false,
+          "description": "Whether to exclude all default ignored files(https://www.electron.build/configuration/contents#files) and options. Defaults to `false`.",
+          "type": [
+            "null",
+            "boolean"
+          ]
+        },
         "electronLanguages": {
           "anyOf": [
             {
@@ -6719,6 +6725,14 @@
         {
           "type": "null"
         }
+      ]
+    },
+    "disableDefaultIgnoredFiles": {
+      "default": false,
+      "description": "Whether to exclude all default ignored files(https://www.electron.build/configuration/contents#files) and options. Defaults to `false`.",
+      "type": [
+        "null",
+        "boolean"
       ]
     },
     "disableSanityCheckAsar": {

@@ -1,6 +1,6 @@
 import BluebirdPromise from "bluebird-lst"
 import { log } from "builder-util"
-import { CONCURRENCY } from "builder-util/out/fs"
+import { CONCURRENCY } from "builder-util"
 import { mkdir } from "fs-extra"
 import { isBinaryFileSync } from "isbinaryfile"
 import * as path from "path"
@@ -18,7 +18,7 @@ function addValue(map: Map<string, Array<string>>, key: string, value: string) {
 }
 
 export function isLibOrExe(file: string): boolean {
-  return file.endsWith(".dll") || file.endsWith(".exe") || file.endsWith(".dylib") || file.endsWith(".so")
+  return file.endsWith(".dll") || file.endsWith(".exe") || file.endsWith(".dylib") || file.endsWith(".so") || file.endsWith(".node")
 }
 
 /** @internal */
@@ -80,9 +80,11 @@ export async function detectUnpackedDirs(fileSet: ResolvedFileSet, autoUnpackDir
     let shouldUnpack = false
     // ffprobe-static and ffmpeg-static are known packages to always unpack
     const moduleName = path.basename(packageDir)
+    const fileBaseName = path.basename(file)
+    const hasExtension = path.extname(fileBaseName)
     if (moduleName === "ffprobe-static" || moduleName === "ffmpeg-static" || isLibOrExe(file)) {
       shouldUnpack = true
-    } else if (!file.includes(".", nextSlashIndex)) {
+    } else if (!hasExtension) {
       shouldUnpack = !!isBinaryFileSync(file)
     }
 

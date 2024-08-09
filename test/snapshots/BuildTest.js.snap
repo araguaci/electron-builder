@@ -907,16 +907,18 @@ Object {
           "files": Object {
             "LICENSE.md": Object {
               "size": "<size>",
+              "unpacked": true,
             },
             "build": Object {
               "files": Object {
                 "Release": Object {
                   "files": Object {
                     "keytar.node": Object {
-                      "executable": true,
                       "size": "<size>",
+                      "unpacked": true,
                     },
                   },
+                  "unpacked": true,
                 },
               },
             },
@@ -924,201 +926,17 @@ Object {
               "files": Object {
                 "keytar.js": Object {
                   "size": "<size>",
+                  "unpacked": true,
                 },
               },
-            },
-            "node_modules": Object {
-              "files": Object {
-                "node-addon-api": Object {
-                  "files": Object {
-                    "LICENSE.md": Object {
-                      "size": "<size>",
-                    },
-                    "common.gypi": Object {
-                      "size": "<size>",
-                    },
-                    "except.gypi": Object {
-                      "size": "<size>",
-                    },
-                    "index.js": Object {
-                      "size": "<size>",
-                    },
-                    "napi-inl.deprecated.h": Object {
-                      "size": "<size>",
-                    },
-                    "napi-inl.h": Object {
-                      "size": "<size>",
-                    },
-                    "napi.h": Object {
-                      "size": "<size>",
-                    },
-                    "node_api.gyp": Object {
-                      "size": "<size>",
-                    },
-                    "noexcept.gypi": Object {
-                      "size": "<size>",
-                    },
-                    "nothing.c": Object {
-                      "size": "<size>",
-                    },
-                    "package-support.json": Object {
-                      "size": "<size>",
-                    },
-                    "package.json": Object {
-                      "size": "<size>",
-                    },
-                    "tools": Object {
-                      "files": Object {
-                        "README.md": Object {
-                          "size": "<size>",
-                        },
-                        "check-napi.js": Object {
-                          "size": "<size>",
-                        },
-                        "clang-format.js": Object {
-                          "size": "<size>",
-                        },
-                        "conversion.js": Object {
-                          "executable": true,
-                          "size": "<size>",
-                        },
-                        "eslint-format.js": Object {
-                          "size": "<size>",
-                        },
-                      },
-                    },
-                  },
-                },
-              },
+              "unpacked": true,
             },
             "package.json": Object {
               "size": "<size>",
+              "unpacked": true,
             },
           },
-        },
-        "lzma-native": Object {
-          "files": Object {
-            "LICENSE": Object {
-              "size": "<size>",
-            },
-            "bin": Object {
-              "files": Object {
-                "lzmajs": Object {
-                  "executable": true,
-                  "size": "<size>",
-                },
-              },
-            },
-            "index.js": Object {
-              "size": "<size>",
-            },
-            "liblzma-build.sh": Object {
-              "executable": true,
-              "size": "<size>",
-            },
-            "liblzma-config.sh": Object {
-              "executable": true,
-              "size": "<size>",
-            },
-            "package.json": Object {
-              "size": "<size>",
-            },
-            "prebuilds": Object {
-              "files": Object {
-                "darwin-arm64": Object {
-                  "files": Object {
-                    "electron.napi.node": Object {
-                      "size": "<size>",
-                    },
-                    "node.napi.node": Object {
-                      "size": "<size>",
-                    },
-                  },
-                },
-                "darwin-x64": Object {
-                  "files": Object {
-                    "electron.napi.node": Object {
-                      "size": "<size>",
-                    },
-                    "node.napi.node": Object {
-                      "size": "<size>",
-                    },
-                  },
-                },
-                "linux-arm64": Object {
-                  "files": Object {
-                    "electron.napi.node": Object {
-                      "size": "<size>",
-                    },
-                    "node.napi.node": Object {
-                      "size": "<size>",
-                    },
-                  },
-                },
-                "linux-x64": Object {
-                  "files": Object {
-                    "electron.napi.node": Object {
-                      "size": "<size>",
-                    },
-                    "node.napi.node": Object {
-                      "size": "<size>",
-                    },
-                  },
-                },
-                "win32-ia32": Object {
-                  "files": Object {
-                    "electron.napi.node": Object {
-                      "size": "<size>",
-                    },
-                    "node.napi.node": Object {
-                      "size": "<size>",
-                    },
-                  },
-                },
-                "win32-x64": Object {
-                  "files": Object {
-                    "electron.napi.node": Object {
-                      "size": "<size>",
-                    },
-                    "node.napi.node": Object {
-                      "size": "<size>",
-                    },
-                  },
-                },
-              },
-            },
-            "src": Object {
-              "files": Object {
-                "filter-array.cpp": Object {
-                  "size": "<size>",
-                },
-                "index-parser.cpp": Object {
-                  "size": "<size>",
-                },
-                "index-parser.h": Object {
-                  "size": "<size>",
-                },
-                "liblzma-functions.cpp": Object {
-                  "size": "<size>",
-                },
-                "liblzma-node.hpp": Object {
-                  "size": "<size>",
-                },
-                "lzma-stream.cpp": Object {
-                  "size": "<size>",
-                },
-                "module.cpp": Object {
-                  "size": "<size>",
-                },
-                "mt-options.cpp": Object {
-                  "size": "<size>",
-                },
-                "util.cpp": Object {
-                  "size": "<size>",
-                },
-              },
-            },
-          },
+          "unpacked": true,
         },
         "mimic-response": Object {
           "files": Object {
@@ -1245,34 +1063,6 @@ Object {
                   "size": "<size>",
                 },
               },
-            },
-          },
-        },
-        "node-gyp-build": Object {
-          "files": Object {
-            "LICENSE": Object {
-              "size": "<size>",
-            },
-            "bin.js": Object {
-              "executable": true,
-              "size": "<size>",
-            },
-            "build-test.js": Object {
-              "executable": true,
-              "size": "<size>",
-            },
-            "index.js": Object {
-              "size": "<size>",
-            },
-            "node-gyp-build.js": Object {
-              "size": "<size>",
-            },
-            "optional.js": Object {
-              "executable": true,
-              "size": "<size>",
-            },
-            "package.json": Object {
-              "size": "<size>",
             },
           },
         },
@@ -5069,6 +4859,54 @@ Object {
 exports[`posix smart unpack 4`] = `
 Array [
   "app.asar",
+  "app.asar.unpacked/node_modules/keytar/LICENSE.md",
+  Object {
+    "content": "{
+  \\"main\\": \\"./lib/keytar.js\\",
+  \\"typings\\": \\"keytar.d.ts\\",
+  \\"name\\": \\"keytar\\",
+  \\"description\\": \\"Bindings to native Mac/Linux/Windows password APIs\\",
+  \\"version\\": \\"7.9.0\\",
+  \\"license\\": \\"MIT\\",
+  \\"repository\\": {
+    \\"type\\": \\"git\\",
+    \\"url\\": \\"https://github.com/atom/node-keytar.git\\"
+  },
+  \\"homepage\\": \\"http://atom.github.io/node-keytar\\",
+  \\"files\\": [
+    \\"lib\\",
+    \\"src\\",
+    \\"binding.gyp\\",
+    \\"keytar.d.ts\\"
+  ],
+  \\"types\\": \\"./keytar.d.ts\\",
+  \\"devDependencies\\": {
+    \\"babel-core\\": \\"^6.26.3\\",
+    \\"babel-plugin-transform-async-to-generator\\": \\"^6.24.1\\",
+    \\"chai\\": \\"^4.2.0\\",
+    \\"mocha\\": \\"^9.2.0\\",
+    \\"node-cpplint\\": \\"~0.4.0\\",
+    \\"node-gyp\\": \\"^8.4.1\\",
+    \\"prebuild\\": \\"^11.0.2\\"
+  },
+  \\"dependencies\\": {
+    \\"node-addon-api\\": \\"^4.3.0\\",
+    \\"prebuild-install\\": \\"^7.0.1\\"
+  },
+  \\"binary\\": {
+    \\"napi_versions\\": [
+      3
+    ]
+  },
+  \\"config\\": {
+    \\"runtime\\": \\"napi\\",
+    \\"target\\": 3
+  }
+}",
+    "name": "app.asar.unpacked/node_modules/keytar/package.json",
+  },
+  "app.asar.unpacked/node_modules/keytar/lib/keytar.js",
+  "app.asar.unpacked/node_modules/keytar/build/Release/keytar.node",
 ]
 `;
 
